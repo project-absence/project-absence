@@ -1,0 +1,22 @@
+name: Project Absence CD (Publish)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Install dependencies for clipboard crate
+        run: sudo apt-get install -y libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+      - name: Publish
+        run: cargo publish --verbose --all-features --token ${{ secrets.CARGO_TOKEN }}

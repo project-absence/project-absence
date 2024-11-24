@@ -1,0 +1,65 @@
+use std::{env, fs, path::PathBuf};
+
+use clap::Parser;
+use serde::{Deserialize, Serialize};
+
+use crate::config::Config;
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default, Parser)]
+#[clap(
+    author = "Krypton (https://krypton.ninja)",
+    about,
+    arg_required_else_help(true)
+)]
+pub struct Args {
+    /// Domain to scan for
+    #[arg(short = 'd', long)]
+    pub domain: String,
+
+    /// The path to the wordlist to use
+    #[arg(
+        short = 'w',
+        long,
+        default_value = "/usr/share/wordlists/discovery/common.txt"
+    )]
+    pub wordlist: String,
+
+    /// Path to configuration file
+    #[arg(short = 'c', long, default_value = "~/.absence/config.toml")]
+    pub config: String,
+
+    /// Whether to copy the resulting JSON database to the clipboard
+    #[arg(short = 'C', long, default_value_t = false)]
+    pub clipboard: bool,
+
+    /// Whether to print some debug data
+    #[arg(short = 'D', long, default_value_t = false)]
+    pub debug: bool,
+
+    /// Whether to print some verbose data
+    #[arg(short = 'v', long, default_value_t = false)]
+    pub verbose: bool,
+}
+
+impl Args {
+    pub fn parse_config(&self) -> Result<Config, String> {
+        let home_dir = env::var("HOME")
+            .or_else(|_| env::var("USERPROFILE"))
+            .unwrap_or_else(|_| String::from(""));
+        let config_path = &self.config;
+        let expanded_config_path = if config_path.starts_with("~") {
+            let mut expanded_path = config_path.clone();
+            expanded_path.replace_range(0..1, &home_dir);
+            PathBuf::from(expanded_path)
+        } else {
+            PathBuf::from(config_path)
+        };
+        let toml_content = fs::read_to_string(&expanded_config_path).map_err(|e| {
+            format!(
+                "Failed to read config file ({:?}): {}",
+                expanded_config_path, e
+            )
+        })?;
+        toml::from_str(&toml_content).map_err(|e| format!("Failed to parse TOML config: {}", e))
+    }
+}
