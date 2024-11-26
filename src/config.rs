@@ -17,7 +17,7 @@ enabled = false
 enabled = false
 "#;
 
-pub fn write_default_config_if_not_existing() {
+pub fn create_file_if_not_existing() {
     let home_dir = env::var("HOME")
         .or_else(|_| env::var("USERPROFILE"))
         .unwrap_or_else(|_| String::from(""));
@@ -81,4 +81,11 @@ pub struct PassiveDNSConfig {
 pub struct PortScannerConfig {
     // Whether the module is enabled
     pub enabled: bool,
+    /// The range of port to scan for (always inclusive)
+    /// Examples:
+    /// * `1-20` -> Port 1 to 20
+    /// * `1-20,22,40-60` -> Port 1 to 20, port 22 and port 40 to 60
+    ///
+    /// If this is option is not provided, it will use the top 1000 most common ports of nmap
+    pub range: Option<String>,
 }
