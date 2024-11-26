@@ -13,7 +13,7 @@ mod session;
 mod state;
 
 fn main() {
-    config::write_default_config_if_not_existing();
+    config::create_file_if_not_existing();
     println!("Project Absence v{}", env!("CARGO_PKG_VERSION"));
 
     let args = args::Args::parse();

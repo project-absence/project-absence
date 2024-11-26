@@ -52,7 +52,6 @@ impl Default for ModulePortScanner {
 impl ModulePortScanner {
     pub fn new() -> Self {
         ModulePortScanner {
-            // Only scan for common ports of nmap for now
             common_ports: Vec::from([
                 1, 3, 4, 6, 7, 9, 13, 17, 19, 20, 21, 22, 23, 24, 25, 26, 30, 32, 33, 37, 42, 43,
                 49, 53, 70, 79, 80, 81, 82, 83, 84, 85, 88, 89, 90, 99, 100, 106, 109, 110, 111,
@@ -129,6 +128,25 @@ impl ModulePortScanner {
             ]),
         }
     }
+
+    fn parse_range(&self, config_range: &String) -> Vec<u16> {
+        let mut ports = Vec::new();
+        for range in config_range.split(",").collect::<Vec<&str>>() {
+            let parts = range.split("-").collect::<Vec<&str>>();
+            // Should basically always be 2 for a range of ports or 1 (default branch) for a single port
+            match parts.len() {
+                2 => {
+                    let start: u16 = parts[0].parse().unwrap();
+                    let end: u16 = parts[1].parse().unwrap();
+                    (start..=end).for_each(|port| ports.push(port));
+                }
+                _ => {
+                    ports.push(parts[0].parse::<u16>().unwrap());
+                }
+            };
+        }
+        ports
+    }
 }
 
 impl Module for ModulePortScanner {
@@ -153,12 +171,17 @@ impl Module for ModulePortScanner {
             }
         };
 
+        let ports = if let Some(ports_range) = &session.get_config().port_scanner.range {
+            self.parse_range(ports_range)
+        } else {
+            self.common_ports.clone()
+        };
+
         // 1337 is just a dummy port because apparently it absolutely needs one
         let mut socket_addrs = format!("{}:1337", domain).to_socket_addrs().unwrap();
         if let Some(socket_addr) = socket_addrs.next() {
             let (tx, rx) = flume::bounded::<u16>(10);
-            let common_ports = self.common_ports.clone();
-            let chunks: Vec<_> = common_ports.chunks(8).map(|chunk| chunk.to_vec()).collect();
+            let chunks: Vec<Vec<u16>> = ports.chunks(8).map(|chunk| chunk.to_vec()).collect();
             for chunk in chunks {
                 let tx = tx.clone();
                 thread::spawn(move || {
