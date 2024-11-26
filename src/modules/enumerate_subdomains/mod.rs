@@ -38,12 +38,11 @@ impl Module for ModuleEnumerateSubdomains {
         vec![events::Type::DiscoveredDomain(String::new())]
     }
 
-    fn execute(&self, session: &Session, context: Context) {
+    fn execute(&self, session: &Session, context: Context) -> Result<(), String> {
         let domain = match context {
             Context::Domain(domain) => domain,
-            Context::None => {
-                logger::error(self.name(), "Received wrong context, exiting module");
-                return;
+            _ => {
+                return Err("Received wrong context, exiting module".to_string());
             }
         };
         let args = session.get_args();
@@ -83,5 +82,7 @@ impl Module for ModuleEnumerateSubdomains {
                 session.get_state().discover_subdomain(uri);
             }
         }
+
+        Ok(())
     }
 }

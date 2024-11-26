@@ -54,19 +54,18 @@ impl Module for ModulePassiveDNS {
         vec![events::Type::DiscoveredDomain(String::new())]
     }
 
-    fn execute(&self, session: &Session, context: Context) {
+    fn execute(&self, session: &Session, context: Context) -> Result<(), String> {
         let domain = match context {
             Context::Domain(domain) => domain,
-            Context::None => {
-                logger::error(self.name(), "Received wrong context, exiting module");
-                return;
+            _ => {
+                return Err("Received wrong context, exiting module".to_string());
             }
         };
         let config = session.get_config();
         let ignore_expired = config.passive_dns.ignore_expired.unwrap_or(false);
         let recent_only = config.passive_dns.recent_only.unwrap_or(false);
         if self.has_processed(domain.to_string()) {
-            return;
+            return Ok(());
         }
         self.process(domain.to_string());
 
@@ -144,8 +143,10 @@ impl Module for ModulePassiveDNS {
                         }
                     }
                 }
+
+                Ok(())
             }
-            Err(_) => logger::error(self.name(), "Failed performing a request to crt.sh"),
+            Err(_) => Err("Failed performing a request to crt.sh (Is it down?)".to_string()),
         }
     }
 }

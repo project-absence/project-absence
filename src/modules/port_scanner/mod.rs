@@ -6,9 +6,9 @@ use port_service::get_service_for_tcp_port;
 use serde_json::Value;
 
 use crate::database::node::Type;
+use crate::events;
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, logger};
 
 mod port_service;
 
@@ -162,12 +162,11 @@ impl Module for ModulePortScanner {
         vec![events::Type::DiscoveredDomain(String::new())]
     }
 
-    fn execute(&self, session: &Session, context: Context) {
+    fn execute(&self, session: &Session, context: Context) -> Result<(), String> {
         let domain = match context {
             Context::Domain(domain) => domain,
             Context::None => {
-                logger::error(self.name(), "Received wrong context, exiting module");
-                return;
+                return Err("Received wrong context, exiting module".to_string());
             }
         };
 
@@ -178,35 +177,43 @@ impl Module for ModulePortScanner {
         };
 
         // 1337 is just a dummy port because apparently it absolutely needs one
-        let mut socket_addrs = format!("{}:1337", domain).to_socket_addrs().unwrap();
-        if let Some(socket_addr) = socket_addrs.next() {
-            let (tx, rx) = flume::bounded::<u16>(10);
-            let chunks: Vec<Vec<u16>> = ports.chunks(8).map(|chunk| chunk.to_vec()).collect();
-            for chunk in chunks {
-                let tx = tx.clone();
-                thread::spawn(move || {
-                    for port in chunk {
-                        let addr = format!("{}:{}", socket_addr.ip(), port);
-                        let timeout = Duration::from_millis(500);
-                        if let Ok(_) = TcpStream::connect_timeout(&addr.parse().unwrap(), timeout) {
-                            tx.send(port).unwrap();
-                        }
+        match format!("{}:1337", domain).to_socket_addrs() {
+            Ok(mut socket_addr) => {
+                if let Some(socket_addr) = socket_addr.next() {
+                    let (tx, rx) = flume::bounded::<u16>(10);
+                    let chunks: Vec<Vec<u16>> =
+                        ports.chunks(8).map(|chunk| chunk.to_vec()).collect();
+                    for chunk in chunks {
+                        let tx = tx.clone();
+                        thread::spawn(move || {
+                            for port in chunk {
+                                let addr = format!("{}:{}", socket_addr.ip(), port);
+                                let timeout = Duration::from_millis(500);
+                                if let Ok(_) =
+                                    TcpStream::connect_timeout(&addr.parse().unwrap(), timeout)
+                                {
+                                    tx.send(port).unwrap();
+                                }
+                            }
+                        });
                     }
-                });
-            }
-            drop(tx);
+                    drop(tx);
 
-            let mut open_ports = Vec::<Value>::new();
-            while let Ok(port) = rx.recv() {
-                open_ports.push(OpenPort::new(port).into());
-            }
+                    let mut open_ports = Vec::<Value>::new();
+                    while let Ok(port) = rx.recv() {
+                        open_ports.push(OpenPort::new(port).into());
+                    }
 
-            if let Some(parent) = session
-                .get_database()
-                .search(Type::Hostname, domain.clone())
-            {
-                parent.add_data(String::from("ports"), open_ports.into());
+                    if let Some(parent) = session
+                        .get_database()
+                        .search(Type::Hostname, domain.clone())
+                    {
+                        parent.add_data(String::from("ports"), open_ports.into());
+                    }
+                }
+                Ok(())
             }
+            Err(_) => Err(format!("Hostname '{}' not found", domain)),
         }
     }
 }

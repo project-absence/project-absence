@@ -24,5 +24,5 @@ pub trait Module: Send + Sync {
     #[allow(dead_code)]
     fn description(&self) -> String;
     fn subscribers(&self) -> Vec<events::Type>;
-    fn execute(&self, session: &Session, context: Context);
+    fn execute(&self, session: &Session, context: Context) -> Result<(), String>;
 }

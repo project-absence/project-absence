@@ -30,10 +30,12 @@ impl Module for ModuleReady {
         vec![events::Type::Ready]
     }
 
-    fn execute(&self, _: &Session, _: Context) {
+    fn execute(&self, _: &Session, _: Context) -> Result<(), String> {
         logger::println(
             "ready",
             "Project Absence is now ready and will start doing its magic!",
-        )
+        );
+
+        Ok(())
     }
 }
