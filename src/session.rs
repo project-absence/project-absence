@@ -147,7 +147,9 @@ impl Session {
                         let module_clone = Arc::clone(module);
                         let session_clone = Arc::clone(&self);
                         move || {
-                            module_clone.execute(&session_clone, context);
+                            if let Err(e) = module_clone.execute(&session_clone, context) {
+                                logger::error(module_clone.name(), e)
+                            }
                             session_clone.emit(events::Type::FinishedTask);
                             drop(permit);
                         }
