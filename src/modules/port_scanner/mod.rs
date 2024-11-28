@@ -6,9 +6,9 @@ use port_service::get_service_for_tcp_port;
 use serde_json::Value;
 
 use crate::database::node::Type;
-use crate::events;
 use crate::modules::{Context, Module};
 use crate::session::Session;
+use crate::{events, logger};
 
 mod port_service;
 
@@ -181,8 +181,11 @@ impl Module for ModulePortScanner {
             Ok(mut socket_addr) => {
                 if let Some(socket_addr) = socket_addr.next() {
                     let (tx, rx) = flume::bounded::<u16>(10);
-                    let chunks: Vec<Vec<u16>> =
-                        ports.chunks(8).map(|chunk| chunk.to_vec()).collect();
+                    let threads = 20;
+                    let chunks: Vec<Vec<u16>> = ports
+                        .chunks((ports.len() + threads - 1) / threads)
+                        .map(|chunk| chunk.to_vec())
+                        .collect();
                     for chunk in chunks {
                         let tx = tx.clone();
                         thread::spawn(move || {
@@ -208,8 +211,16 @@ impl Module for ModulePortScanner {
                         .get_database()
                         .search(Type::Hostname, domain.clone())
                     {
-                        parent.add_data(String::from("ports"), open_ports.into());
+                        parent.add_data(String::from("ports"), open_ports.clone().into());
                     }
+                    logger::println(
+                        self.name(),
+                        format!(
+                            "Found {} open ports for the domain '{}'",
+                            open_ports.len(),
+                            domain
+                        ),
+                    )
                 }
                 Ok(())
             }

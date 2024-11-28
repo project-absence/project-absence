@@ -74,7 +74,8 @@ impl Module for ModulePassiveDNS {
         let random_user_agent =
             lines.clone().collect::<Vec<_>>()[rand::thread_rng().gen_range(0..lines.count())];
 
-        let response = reqwest::blocking::Client::new()
+        let response = session
+            .get_http_client()
             .get(format!("https://crt.sh/?q={}&output=json", domain))
             .header(USER_AGENT, random_user_agent)
             .send();
@@ -140,6 +141,7 @@ impl Module for ModulePassiveDNS {
                             session
                                 .get_state()
                                 .discover_subdomain(name_value.to_string());
+                            session.emit(events::Type::DiscoveredDomain(name_value.clone()));
                         }
                     }
                 }

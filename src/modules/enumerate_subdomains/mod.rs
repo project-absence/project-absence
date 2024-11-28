@@ -79,7 +79,8 @@ impl Module for ModuleEnumerateSubdomains {
                     let new_node = Node::new(Type::Hostname, uri.clone());
                     parent.connect(new_node);
                 }
-                session.get_state().discover_subdomain(uri);
+                session.get_state().discover_subdomain(uri.clone());
+                session.emit(events::Type::DiscoveredDomain(uri));
             }
         }
 

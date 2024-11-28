@@ -6,6 +6,7 @@ use std::{env, thread};
 
 use clipboard::{ClipboardContext, ClipboardProvider};
 use flume::{Receiver, Sender};
+use reqwest::blocking::Client;
 
 use crate::modules::Module;
 use crate::{args, config, database, debug, events, logger, modules, state};
@@ -15,6 +16,7 @@ pub struct Session {
     config: config::Config,
     database: Arc<Mutex<database::Database>>,
     state: Arc<state::State>,
+    http_client: Client,
 
     sender: Sender<events::Type>,
     receiver: Receiver<events::Type>,
@@ -39,6 +41,7 @@ impl Session {
                 database::node::Node::new(database::node::Type::Hostname, domain_clone),
             ))),
             state: Arc::new(state::State::new(is_verbose, is_debug)),
+            http_client: Client::new(),
 
             sender,
             receiver,
@@ -61,6 +64,10 @@ impl Session {
 
     pub fn get_state(&self) -> Arc<state::State> {
         Arc::clone(&self.state)
+    }
+
+    pub fn get_http_client(&self) -> &Client {
+        &self.http_client
     }
 
     pub fn register_module<T: Module + Send + Sync + 'static>(&self, module: T) {
@@ -99,7 +106,9 @@ impl Session {
 
     pub fn run(self: Arc<Self>) -> Result<(), Error> {
         self.emit(events::Type::Ready);
-        self.emit(events::Type::DiscoveredDomain(self.args.domain.clone()));
+        self.emit(events::Type::DiscoveredDomain(
+            self.get_args().domain.clone(),
+        ));
 
         while let Ok(event) = self.receiver.recv() {
             if event == events::Type::FinishedTask {
@@ -114,8 +123,6 @@ impl Session {
                     );
                 }
                 if self.get_state().active_tasks_count() == 0 {
-                    logger::println("finished", "All modules have finished execution, leaving!");
-
                     if self.get_args().clipboard {
                         let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
                         if ctx
