@@ -118,7 +118,10 @@ impl Session {
 
                     if self.get_args().clipboard {
                         let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
-                        if let Ok(_) = ctx.set_contents(self.get_database().get_as_pretty_json()) {
+                        if ctx
+                            .set_contents(self.get_database().get_as_pretty_json())
+                            .is_ok()
+                        {
                             logger::info(
                                 "",
                                 "Successfully copied the resulting JSON database to the clipboard",
@@ -142,8 +145,19 @@ impl Session {
                         PathBuf::from(result_path)
                     };
                     if create_dir_all(expanded_result_path.parent().unwrap()).is_ok() {
-                        let mut file_result = File::create(expanded_result_path)?;
-                        file_result.write(self.get_database().get_as_pretty_json().as_bytes())?;
+                        let mut file_result = File::create(expanded_result_path.clone())?;
+                        if file_result
+                            .write_all(self.get_database().get_as_pretty_json().as_bytes())
+                            .is_ok()
+                        {
+                            logger::info(
+                                "",
+                                format!(
+                                    "Successfully wrote the resulting JSON database in '{}'",
+                                    expanded_result_path.display()
+                                ),
+                            )
+                        };
                     }
 
                     break;

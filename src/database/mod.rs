@@ -1,6 +1,7 @@
 use node::{Node, Type};
 
 pub mod node;
+#[cfg(test)]
 mod tests;
 
 pub struct Database {

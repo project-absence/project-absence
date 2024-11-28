@@ -27,13 +27,13 @@ impl OpenPort {
     }
 }
 
-impl Into<serde_json::Value> for OpenPort {
-    fn into(self) -> serde_json::Value {
+impl From<OpenPort> for serde_json::Value {
+    fn from(value: OpenPort) -> Self {
         serde_json::Value::Object(serde_json::Map::from_iter([
-            (String::from("port"), self.port.into()),
+            (String::from("port"), value.port.into()),
             (
                 String::from("potential_service"),
-                self.potential_service.into(),
+                value.potential_service.into(),
             ),
         ]))
     }
@@ -129,7 +129,7 @@ impl ModulePortScanner {
         }
     }
 
-    fn parse_range(&self, config_range: &String) -> Vec<u16> {
+    fn parse_range(&self, config_range: &str) -> Vec<u16> {
         let mut ports = Vec::new();
         for range in config_range.split(",").collect::<Vec<&str>>() {
             let parts = range.split("-").collect::<Vec<&str>>();
@@ -189,8 +189,8 @@ impl Module for ModulePortScanner {
                             for port in chunk {
                                 let addr = format!("{}:{}", socket_addr.ip(), port);
                                 let timeout = Duration::from_millis(500);
-                                if let Ok(_) =
-                                    TcpStream::connect_timeout(&addr.parse().unwrap(), timeout)
+                                if TcpStream::connect_timeout(&addr.parse().unwrap(), timeout)
+                                    .is_ok()
                                 {
                                     tx.send(port).unwrap();
                                 }

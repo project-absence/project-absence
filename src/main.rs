@@ -29,8 +29,7 @@ fn main() {
     let session = session::Session::new(args, config, tx, rx);
     session.register_config_modules();
 
-    match session.run() {
-        Err(err) => logger::error("session:run", err.to_string()),
-        Ok(_) => {}
-    };
+    if let Err(err) = session.run() {
+        logger::error("session:run", err.to_string());
+    }
 }
