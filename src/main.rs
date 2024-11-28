@@ -28,5 +28,9 @@ fn main() {
     let (tx, rx) = flume::bounded::<events::Type>(100);
     let session = session::Session::new(args, config, tx, rx);
     session.register_config_modules();
-    session.start();
+
+    match session.run() {
+        Err(err) => logger::error("session:run", err.to_string()),
+        Ok(_) => {}
+    };
 }

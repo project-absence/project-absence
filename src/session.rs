@@ -1,5 +1,8 @@
+use std::fs::{create_dir_all, File};
+use std::io::{Error, Write};
+use std::path::PathBuf;
 use std::sync::{Arc, Mutex, MutexGuard};
-use std::thread;
+use std::{env, thread};
 
 use clipboard::{ClipboardContext, ClipboardProvider};
 use flume::{Receiver, Sender};
@@ -94,7 +97,7 @@ impl Session {
         };
     }
 
-    pub fn start(self: Arc<Self>) {
+    pub fn run(self: Arc<Self>) -> Result<(), Error> {
         self.emit(events::Type::Ready);
         self.emit(events::Type::DiscoveredDomain(self.args.domain.clone()));
 
@@ -112,10 +115,7 @@ impl Session {
                 }
                 if self.get_state().active_tasks_count() == 0 {
                     logger::println("finished", "All modules have finished execution, leaving!");
-                    if self.get_state().is_debug() {
-                        debug::database::render_compact(&mut self.get_database());
-                        println!("{}", self.get_database().get_as_pretty_json());
-                    }
+
                     if self.get_args().clipboard {
                         let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
                         if let Ok(_) = ctx.set_contents(self.get_database().get_as_pretty_json()) {
@@ -125,9 +125,31 @@ impl Session {
                             )
                         }
                     }
+
+                    if self.get_state().is_debug() {
+                        debug::database::render_compact(&mut self.get_database());
+                    }
+
+                    let home_dir = env::var("HOME")
+                        .or_else(|_| env::var("USERPROFILE"))
+                        .unwrap_or_else(|_| String::from(""));
+                    let result_path = &self.get_args().file;
+                    let expanded_result_path = if result_path.starts_with("~") {
+                        let mut expanded_path = result_path.clone();
+                        expanded_path.replace_range(0..1, &home_dir);
+                        PathBuf::from(expanded_path)
+                    } else {
+                        PathBuf::from(result_path)
+                    };
+                    if create_dir_all(expanded_result_path.parent().unwrap()).is_ok() {
+                        let mut file_result = File::create(expanded_result_path)?;
+                        file_result.write(self.get_database().get_as_pretty_json().as_bytes())?;
+                    }
+
                     break;
                 }
             }
+
             let modules = self.modules.lock().unwrap();
             for module in &*modules {
                 if module.subscribers().iter().any(|sub_event| {
@@ -157,5 +179,7 @@ impl Session {
                 }
             }
         }
+
+        Ok(())
     }
 }

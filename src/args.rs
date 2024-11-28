@@ -28,11 +28,15 @@ pub struct Args {
     #[arg(short = 'c', long, default_value = "~/.absence/config.toml")]
     pub config: String,
 
+    /// The file path of where the resulting JSON database will be saved to
+    #[arg(short = 'f', long, default_value = "~/.absence/result.json")]
+    pub file: String,
+
     /// Whether to copy the resulting JSON database to the clipboard
     #[arg(short = 'C', long, default_value_t = false)]
     pub clipboard: bool,
 
-    /// Whether to print some debug data
+    /// Whether to print the database at the end of execution in a tree format and some other debugging data
     #[arg(short = 'D', long, default_value_t = false)]
     pub debug: bool,
 
