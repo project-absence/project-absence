@@ -9,7 +9,7 @@ use crate::database::node::{Node, Type};
 use crate::modules::passive_dns::crt_sh::CrtShItem;
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, logger};
+use crate::{events, flags, logger};
 
 mod crt_sh;
 
@@ -97,11 +97,15 @@ impl Module for ModulePassiveDNS {
                             .has_discovered_subdomain(name_value.to_string())
                         {
                             let now = Utc::now();
+                            let mut flags = flags::ZERO;
 
                             // Check if the certificate has expired
                             let has_expired = item.not_after < now;
                             if ignore_expired && has_expired {
                                 continue;
+                            }
+                            if has_expired {
+                                flags |= flags::hostname::HAS_EXPIRED;
                             }
 
                             // Check if the certificate has been created within the last 24 hours
@@ -109,6 +113,9 @@ impl Module for ModulePassiveDNS {
                                 && item.not_before >= now - Duration::try_hours(24).unwrap();
                             if !is_recent && recent_only {
                                 continue;
+                            }
+                            if is_recent {
+                                flags |= flags::hostname::IS_RECENT;
                             }
 
                             logger::println(
@@ -134,8 +141,7 @@ impl Module for ModulePassiveDNS {
                             {
                                 let mut new_node = Node::new(Type::Hostname, name_value.clone());
                                 new_node
-                                    .add_data(String::from("expired"), Value::Bool(has_expired));
-                                new_node.add_data(String::from("recent"), Value::Bool(is_recent));
+                                    .add_data(String::from("flags"), Value::Number(flags.into()));
                                 parent.connect(new_node);
                             }
                             session

@@ -7,6 +7,7 @@ mod config;
 mod database;
 mod debug;
 mod events;
+mod flags;
 mod logger;
 mod modules;
 mod session;

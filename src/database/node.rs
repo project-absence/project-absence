@@ -80,6 +80,11 @@ impl Node {
         self.data.get(key)
     }
 
+    #[allow(dead_code)]
+    pub fn edit_data(&mut self, key: String, new_value: Value) {
+        self.data.entry(key).and_modify(|e| *e = new_value);
+    }
+
     pub fn get_connections(&self) -> Vec<Node> {
         self.connections.clone()
     }
