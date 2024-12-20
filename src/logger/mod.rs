@@ -1,10 +1,7 @@
-use std::sync::Mutex;
+use std::sync::{LazyLock, Mutex};
 
-use lazy_static::lazy_static;
-
-lazy_static! {
-    static ref LOGGER: Mutex<tangra::Logger> = Mutex::new(tangra::Logger::new());
-}
+static LOGGER: LazyLock<Mutex<tangra::Logger>> =
+    LazyLock::new(|| Mutex::new(tangra::Logger::new()));
 
 fn parse_event_name(event: String) -> String {
     if !event.is_empty() {
