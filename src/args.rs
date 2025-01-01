@@ -13,7 +13,12 @@ use crate::config::Config;
 )]
 pub struct Args {
     /// Domain to scan for
-    #[arg(short = 'd', long)]
+    #[arg(
+        short = 'd',
+        long,
+        default_value = "",
+        required_unless_present = "version"
+    )]
     pub domain: String,
 
     /// The path to the wordlist to use
@@ -35,6 +40,10 @@ pub struct Args {
     /// Whether to copy the resulting JSON database to the clipboard
     #[arg(short = 'C', long, default_value_t = false)]
     pub clipboard: bool,
+
+    /// Display the verison of the tool
+    #[arg(short = 'V', long, default_value_t = false)]
+    pub version: bool,
 
     /// Whether to print the database at the end of execution in a tree format and some other debugging data
     #[arg(short = 'D', long, default_value_t = false)]

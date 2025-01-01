@@ -1,6 +1,6 @@
 use std::sync::{LazyLock, Mutex};
 
-static LOGGER: LazyLock<Mutex<tangra::Logger>> =
+pub static LOGGER: LazyLock<Mutex<tangra::Logger>> =
     LazyLock::new(|| Mutex::new(tangra::Logger::new()));
 
 fn parse_event_name(event: String) -> String {

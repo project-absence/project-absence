@@ -1,6 +1,10 @@
-use std::process;
+use std::{
+    env::consts::{ARCH, OS},
+    process,
+};
 
 use clap::Parser;
+use logger::LOGGER;
 
 mod args;
 mod config;
@@ -15,9 +19,17 @@ mod state;
 
 fn main() {
     config::create_file_if_not_existing();
-    println!("Project Absence v{}", env!("CARGO_PKG_VERSION"));
+    LOGGER.lock().unwrap().println(format!(
+        "Project Absence v{} $[fg:gray](built for {} on {})$[effect:reset]",
+        env!("CARGO_PKG_VERSION"),
+        OS,
+        ARCH
+    ));
 
     let args = args::Args::parse();
+    if args.version {
+        process::exit(0);
+    }
     let config = match args.parse_config() {
         Ok(config) => config,
         Err(e) => {
