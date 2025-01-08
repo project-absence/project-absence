@@ -4,6 +4,7 @@ This is a list of things I want to have done before releasing a v1.0.0
 
 ## Tool
 - [ ] Write a proper `README.md` file with its sections
+- [ ] Have the tool report some statistics while running (e.g. memory usage, cpu usage & total tasks/threads running)
 - [ ] UDP port scanner and make it a config of the `scanner:port` module
 - [ ] Take a screenshot when a new hostname has been discovered -> https://crates.io/crates/headless_chrome
 - [ ] Banner grabbing, e.g. getting the web server that is being ran
