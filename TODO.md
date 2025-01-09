@@ -3,8 +3,8 @@
 This is a list of things I want to have done before releasing a v1.0.0
 
 ## Tool
-- [ ] Write a proper `README.md` file with its sections
 - [ ] Have the tool report some statistics while running (e.g. memory usage, cpu usage & total tasks/threads running)
+- [ ] Make the copy to clipboard functionality behind a feature to prevent being forced to install the required packages by the `clipboard` crate on Linux systems
 - [ ] UDP port scanner and make it a config of the `scanner:port` module
 - [ ] Take a screenshot when a new hostname has been discovered -> https://crates.io/crates/headless_chrome
 - [ ] Banner grabbing, e.g. getting the web server that is being ran
@@ -13,6 +13,7 @@ This is a list of things I want to have done before releasing a v1.0.0
 - [ ] Overall SSL scanner -> Is the certificate trusted, is it vulnerable to Heartbleed, etc.
 - [ ] Have a Docker image ready
 - [ ] Geolocation of newly discovered hostnames, though not sure if it's worth it at the moment
+- [X] Write a proper `README.md` file with its sections
 - [X] Have a `--version` CLI argument to get the current running version without running the tool
 
 ## Documentation
