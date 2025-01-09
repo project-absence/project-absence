@@ -24,6 +24,12 @@ Project Absence is a tool for analyzing websites. Its features include finding o
 
 ## Getting Started
 
+### Rust Features
+
+Project Absence has the following [Rust features](https://doc.rust-lang.org/cargo/reference/features.html) available:
+
+* `clipboard`: Will let you use the `--clipboard/-C` command line argument, only necessary if you want to copy the result to your clipboard (the result is saved in a file at `~/.absence/result.json` either way)
+
 ### Installation
 
 > Curently only building from source is possible to use until a release has been published, which will be done soon.
@@ -55,7 +61,7 @@ cargo build --release
 ```
 
 > [!NOTE]
-> Currently, on **Linux** systems, you have to install the following packages:
+> On **Linux** systems, you have to install the following packages if you want to use the `--clipboard/-C` CLI argument:
 >
 > - `libxcb1-dev`
 > - `libxcb-render0-dev`

@@ -38,6 +38,7 @@ pub struct Args {
     pub file: String,
 
     /// Whether to copy the resulting JSON database to the clipboard
+    #[cfg(feature = "clipboard")]
     #[arg(short = 'C', long, default_value_t = false)]
     pub clipboard: bool,
 

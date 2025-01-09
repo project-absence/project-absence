@@ -4,7 +4,9 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::{env, thread};
 
+#[cfg(feature = "clipboard")]
 use clipboard::{ClipboardContext, ClipboardProvider};
+
 use flume::{Receiver, Sender};
 use reqwest::blocking::Client;
 
@@ -123,6 +125,7 @@ impl Session {
                     );
                 }
                 if self.get_state().active_tasks_count() == 0 {
+                    #[cfg(feature = "clipboard")]
                     if self.get_args().clipboard {
                         let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
                         if ctx
