@@ -107,6 +107,14 @@ impl Session {
     }
 
     pub fn run(self: Arc<Self>) -> Result<(), Error> {
+        if self.get_state().is_debug_or_verbose() {
+            thread::spawn({
+                let state_clone = Arc::clone(&self.get_state());
+                move || {
+                    state_clone.actively_report();
+                }
+            });
+        }
         self.emit(events::Type::Ready);
         self.emit(events::Type::DiscoveredDomain(
             self.get_args().domain.clone(),

@@ -1,8 +1,14 @@
-use std::sync::{
-    atomic::{AtomicUsize, Ordering},
-    Arc, Mutex,
+use std::{
+    sync::{
+        atomic::{AtomicUsize, Ordering},
+        Arc, Mutex,
+    },
+    thread::sleep,
+    time::Duration,
 };
 
+use human_bytes::human_bytes;
+use memory_stats::memory_stats;
 use simple_semaphore::Permit;
 
 use crate::logger;
@@ -28,29 +34,39 @@ impl State {
         }
     }
 
+    pub fn actively_report(&self) {
+        let dur = Duration::from_secs(1);
+        loop {
+            sleep(dur);
+            let usage = if let Some(usage) = memory_stats() {
+                usage.physical_mem
+            } else {
+                logger::error("state", "Couldn't get the current memory usage");
+                0
+            };
+            logger::info(
+                "state",
+                format!(
+                    "tasks={}, permits={}, memory={}",
+                    self.active_tasks_count(),
+                    self.semaphore.available_permits(),
+                    human_bytes(usage as f64),
+                ),
+            );
+        }
+    }
+
     pub fn increment_tasks(&self) {
         self.active_tasks.fetch_add(1, Ordering::SeqCst);
         if self.is_debug() {
-            logger::debug(
-                "state",
-                format!(
-                    "The running task counter has incremented, current running tasks: {}",
-                    self.active_tasks_count()
-                ),
-            );
+            logger::debug("state", "The running task counter has incremented");
         }
     }
 
     pub fn decrement_tasks(&self) {
         self.active_tasks.fetch_sub(1, Ordering::SeqCst);
         if self.is_debug() {
-            logger::debug(
-                "state",
-                format!(
-                    "The running task counter has decremented, current running tasks: {}",
-                    self.active_tasks_count()
-                ),
-            );
+            logger::debug("state", "The running task counter has decremented");
         }
     }
 
