@@ -3,7 +3,6 @@
 ## v1.0.0
 
 ### Tool
-- [ ] Banner grabbing, e.g. getting the web server that is being ran
 - [ ] Have a an option to allow only non-noisy modules to be ran. (e.g. enumeration modules that use wordlists won't be ran)
 - [ ] Have a Docker image ready
 - [X] Have the tool report some statistics while running (e.g. memory usage, ~~cpu usage~~ & total tasks/threads running)
@@ -21,6 +20,7 @@
 ## Future versions
 
 ### Tool
+- [ ] Banner grabbing, e.g. getting the web server that is being ran
 - [ ] UDP port scanner and make it a config of the `scanner:port` module
 - [ ] Overall SSL scanner -> Is the certificate trusted, is it vulnerable to Heartbleed, etc.
 - [ ] Geolocation of newly discovered hostnames, though not sure if it's worth it at the moment
