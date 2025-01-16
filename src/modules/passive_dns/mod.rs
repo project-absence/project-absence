@@ -11,6 +11,8 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{events, flags, logger};
 
+use super::NoiseLevel;
+
 mod crt_sh;
 
 pub struct ModulePassiveDNS {
@@ -48,6 +50,10 @@ impl Module for ModulePassiveDNS {
         String::from(
             "This module will perform a passive discovery of new subdomains by using crt.sh",
         )
+    }
+
+    fn noise_level(&self) -> NoiseLevel {
+        NoiseLevel::Low
     }
 
     fn subscribers(&self) -> Vec<events::Type> {

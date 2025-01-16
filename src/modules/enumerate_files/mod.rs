@@ -10,6 +10,8 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{events, logger};
 
+use super::NoiseLevel;
+
 pub struct ModuleEnumerateFiles {}
 
 impl Default for ModuleEnumerateFiles {
@@ -31,6 +33,10 @@ impl Module for ModuleEnumerateFiles {
 
     fn description(&self) -> String {
         String::from("This module will aggressively try to find files based on the given wordlist and extension")
+    }
+
+    fn noise_level(&self) -> NoiseLevel {
+        NoiseLevel::High
     }
 
     fn subscribers(&self) -> Vec<events::Type> {

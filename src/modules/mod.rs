@@ -1,3 +1,6 @@
+use clap::ValueEnum;
+use serde::{Deserialize, Serialize};
+
 use crate::events;
 use crate::session::Session;
 
@@ -19,10 +22,22 @@ pub fn get_context_for_event(event: &events::Type) -> Context {
     }
 }
 
+#[derive(
+    Copy, Clone, Debug, Default, Deserialize, PartialEq, Eq, PartialOrd, Ord, Serialize, ValueEnum,
+)]
+pub enum NoiseLevel {
+    None,
+    Low,
+    #[default]
+    Medium,
+    High,
+}
+
 pub trait Module: Send + Sync {
     fn name(&self) -> String;
     #[allow(dead_code)]
     fn description(&self) -> String;
+    fn noise_level(&self) -> NoiseLevel;
     fn subscribers(&self) -> Vec<events::Type>;
     fn execute(&self, session: &Session, context: Context) -> Result<(), String>;
 }

@@ -3,6 +3,8 @@ use crate::logger;
 use crate::modules::{Context, Module};
 use crate::session::Session;
 
+use super::NoiseLevel;
+
 pub struct ModuleReady {}
 
 impl Default for ModuleReady {
@@ -20,6 +22,10 @@ impl ModuleReady {
 impl Module for ModuleReady {
     fn name(&self) -> String {
         String::from("ready")
+    }
+
+    fn noise_level(&self) -> NoiseLevel {
+        NoiseLevel::None
     }
 
     fn description(&self) -> String {

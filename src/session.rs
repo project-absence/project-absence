@@ -81,17 +81,30 @@ impl Session {
     }
 
     pub fn register_config_modules(&self) {
+        // TODO: This deserves some cleanup
         self.register_module(modules::ready::ModuleReady::new());
-        if self.config.enumerate_files.enabled {
+
+        if self.config.enumerate_files.enabled
+            && modules::enumerate_files::ModuleEnumerateFiles::new().noise_level()
+                <= self.args.noise_level
+        {
             self.register_module(modules::enumerate_files::ModuleEnumerateFiles::new());
         }
-        if self.config.enumerate_subdomains.enabled {
+        if self.config.enumerate_subdomains.enabled
+            && modules::enumerate_subdomains::ModuleEnumerateSubdomains::new().noise_level()
+                <= self.args.noise_level
+        {
             self.register_module(modules::enumerate_subdomains::ModuleEnumerateSubdomains::new());
         }
-        if self.config.passive_dns.enabled {
+        if self.config.passive_dns.enabled
+            && modules::passive_dns::ModulePassiveDNS::new().noise_level() <= self.args.noise_level
+        {
             self.register_module(modules::passive_dns::ModulePassiveDNS::new());
         }
-        if self.config.port_scanner.enabled {
+        if self.config.port_scanner.enabled
+            && modules::port_scanner::ModulePortScanner::new().noise_level()
+                <= self.args.noise_level
+        {
             self.register_module(modules::port_scanner::ModulePortScanner::new());
         }
     }

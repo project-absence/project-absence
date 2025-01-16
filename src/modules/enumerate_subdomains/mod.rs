@@ -9,6 +9,8 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{events, logger};
 
+use super::NoiseLevel;
+
 pub struct ModuleEnumerateSubdomains {}
 
 impl Default for ModuleEnumerateSubdomains {
@@ -32,6 +34,10 @@ impl Module for ModuleEnumerateSubdomains {
         String::from(
             "This module will aggressively try to find subdomains based on the given wordlist",
         )
+    }
+
+    fn noise_level(&self) -> NoiseLevel {
+        NoiseLevel::High
     }
 
     fn subscribers(&self) -> Vec<events::Type> {

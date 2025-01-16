@@ -10,6 +10,8 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{events, logger};
 
+use super::NoiseLevel;
+
 mod port_service;
 
 struct OpenPort {
@@ -156,6 +158,10 @@ impl Module for ModulePortScanner {
 
     fn description(&self) -> String {
         String::from("This module will check if the most common ports are open")
+    }
+
+    fn noise_level(&self) -> NoiseLevel {
+        NoiseLevel::High
     }
 
     fn subscribers(&self) -> Vec<events::Type> {

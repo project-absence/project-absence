@@ -3,8 +3,8 @@
 ## v1.0.0
 
 ### Tool
-- [ ] Have a an option to allow only non-noisy modules to be ran. (e.g. enumeration modules that use wordlists won't be ran)
 - [ ] Have a Docker image ready
+- [X] Have a an option to allow only non-noisy modules to be ran. (e.g. enumeration modules that use wordlists won't be ran)
 - [X] Have the tool report some statistics while running (e.g. memory usage, ~~cpu usage~~ & total tasks/threads running)
 - [X] Make the copy to clipboard functionality behind a feature to prevent being forced to install the required packages by the `clipboard` crate on Linux systems
 - [X] Write a proper `README.md` file with its sections
