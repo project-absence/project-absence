@@ -32,11 +32,9 @@ Project Absence has the following [Rust features](https://doc.rust-lang.org/carg
 
 ### Installation
 
-> Curently only building from source is possible to use until a release has been published, which will be done soon.
-
 To install Project Absence, you can use one of the following methods:
 
-#### _Cargo_
+#### Cargo
 
 You need to have [Rust](https://rustup.rs) installed. You can then install using:
 
@@ -44,19 +42,37 @@ You need to have [Rust](https://rustup.rs) installed. You can then install using
 cargo install project-absence
 ```
 
-#### _Docker_
+#### Docker
 
 You can run the tool from the published [Docker image](https://hub.docker.com/r/kkrypt0nn/project-absence) using:
 
+```bash
+docker run -v ~/.absence:/root/.absence -it kkrypt0nn/project-absence
 ```
-docker run -it kkrypt0nn/project-absence
+
+#### Docker compose
+
+You can run the tool from a `docker-compose.yml` file, for example:
+
+```yml
+services:
+  project-absence:
+    image: kkrypt0nn/project-absence:latest
+    volumes:
+      - ${HOME}/.absence:/root/.absence
+```
+
+And then run it with
+
+```bash
+docker-compose run project-absence
 ```
 
 #### Build from source
 
 You need to have [Rust](https://rustup.rs) installed. After cloning this repository you can build it using:
 
-```
+```bash
 cargo build --release
 ```
 
