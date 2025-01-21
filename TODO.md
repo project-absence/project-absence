@@ -1,4 +1,3 @@
-# TODO
 
 ## v1.0.0
 
@@ -11,7 +10,7 @@
 - [X] Have a `--version` CLI argument to get the current running version without running the tool
 
 ### Documentation
-- [ ] A page per module for their description, usage, examples, noise level and other things
+- [X] A page per module for their description, usage, examples, noise level and other things
 - [X] How to install the tool
 
 ## Future versions
