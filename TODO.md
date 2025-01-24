@@ -1,21 +1,6 @@
+# TODO
 
-## v1.0.0
-
-### Tool
-- [X] Have a Docker image ready
-- [X] Have a an option to allow only non-noisy modules to be ran. (e.g. enumeration modules that use wordlists won't be ran)
-- [X] Have the tool report some statistics while running (e.g. memory usage, ~~cpu usage~~ & total tasks/threads running)
-- [X] Make the copy to clipboard functionality behind a feature to prevent being forced to install the required packages by the `clipboard` crate on Linux systems
-- [X] Write a proper `README.md` file with its sections
-- [X] Have a `--version` CLI argument to get the current running version without running the tool
-
-### Documentation
-- [X] A page per module for their description, usage, examples, noise level and other things
-- [X] How to install the tool
-
-## Future versions
-
-### Tool
+## Tool
 - [ ] Trigger a webhook for the results, maybe provide support for specific webhooks e.g. Slack
 - [ ] Banner grabbing, e.g. getting the web server that is being ran
 - [ ] UDP port scanner and make it a config of the `scanner:port` module
@@ -24,6 +9,6 @@
 - [ ] Take a screenshot when a new hostname has been discovered -> https://crates.io/crates/headless_chrome
 - [ ] Enumerate emails for newly discovered hostnames
 
-### Website
-- [ ] Some place to login/signup and share config files or save the results of the tool on your personal account
+## Website
 - [ ] Roadmap of future goals?
+- [ ] Some place to login/signup and share config files or save the results of the tool on your personal account
