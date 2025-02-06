@@ -4,7 +4,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::logger;
 
-const DEFAULT_CONFIG: &str = r#"[enumerate_files]
+const DEFAULT_CONFIG: &str = r#"[banner_grabber]
+enabled = false
+
+[enumerate_files]
 enabled = false
 
 [enumerate_subdomains]
@@ -43,6 +46,7 @@ pub fn create_file_if_not_existing() {
 /// The config.toml file structure
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
+    pub banner_grabber: BannerGrabberConfig,
     pub enumerate_files: EnumerateFilesConfig,
     pub enumerate_subdomains: EnumerateSubdomainsConfig,
     pub passive_dns: PassiveDNSConfig,
@@ -50,8 +54,14 @@ pub struct Config {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct BannerGrabberConfig {
+    /// Whether the module is enabled
+    pub enabled: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EnumerateFilesConfig {
-    // Whether the module is enabled
+    /// Whether the module is enabled
     pub enabled: bool,
     /// The path to the wordlist to use
     pub wordlist: Option<String>,
@@ -61,7 +71,7 @@ pub struct EnumerateFilesConfig {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EnumerateSubdomainsConfig {
-    // Whether the module is enabled
+    /// Whether the module is enabled
     pub enabled: bool,
     /// The path to the wordlist to use
     pub wordlist: Option<String>,
@@ -69,7 +79,7 @@ pub struct EnumerateSubdomainsConfig {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PassiveDNSConfig {
-    // Whether the module is enabled
+    /// Whether the module is enabled
     pub enabled: bool,
     /// Ignore expired certificates
     pub ignore_expired: Option<bool>,
@@ -79,7 +89,7 @@ pub struct PassiveDNSConfig {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PortScannerConfig {
-    // Whether the module is enabled
+    /// Whether the module is enabled
     pub enabled: bool,
     /// The range of port to scan for (always inclusive)
     /// Examples:

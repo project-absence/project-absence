@@ -171,7 +171,7 @@ impl Module for ModulePortScanner {
     fn execute(&self, session: &Session, context: Context) -> Result<(), String> {
         let domain = match context {
             Context::Domain(domain) => domain,
-            Context::None => {
+            _ => {
                 return Err("Received wrong context, exiting module".to_string());
             }
         };
@@ -211,6 +211,7 @@ impl Module for ModulePortScanner {
                     let mut open_ports = Vec::<Value>::new();
                     while let Ok(port) = rx.recv() {
                         open_ports.push(OpenPort::new(port).into());
+                        session.emit(events::Type::OpenPort(domain.clone(), port));
                     }
 
                     if let Some(parent) = session

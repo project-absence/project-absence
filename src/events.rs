@@ -6,6 +6,9 @@ pub enum Type {
     FinishedTask,
     /// String: the discovered domain
     DiscoveredDomain(String),
+    /// String: the hostname
+    /// u16: the port that is open
+    OpenPort(String, u16),
 }
 
 impl fmt::Display for Type {
@@ -19,6 +22,9 @@ impl fmt::Display for Type {
             }
             Type::DiscoveredDomain(_) => {
                 write!(formatter, "discovered:domain")
+            }
+            Type::OpenPort(_, _) => {
+                write!(formatter, "open:port")
             }
         }
     }

@@ -20,7 +20,7 @@
 
 ### 👁️ Uncover the unseen
 
-Project Absence is a tool for analyzing websites. Its features include finding open ports, discovering subdomains, discovering files and more will be coming with the time.
+Project Absence is a tool for analyzing your hosts. Its features include finding open ports, discovering subdomains, discovering files and more will be coming with the time.
 
 ## Getting Started
 
@@ -88,7 +88,7 @@ cargo build --release
 
 ### Example Usage
 
-Using the tool is straightforward. You may look at the [documentation](https://docs.projectabsence.org) website for the config and CLI arguments that you can pass.
+Using the tool is straightforward. You may look at the [documentation](https://projectabsence.org/docs/) website for the config and CLI arguments that you can pass.
 
 After editing the config as you wish, running the tool with no specific CLI arguments is as simple as doing
 
@@ -98,7 +98,7 @@ project-absence -d krypton.ninja
 
 ## Documentation
 
-Full documentation is available [here](https://docs.projectabsence.org). It includes detailed explanations of arguments and configurations.
+Full documentation is available [here](https://projectabsence.org/docs/). It includes detailed explanations of arguments and configurations.
 
 ## Troubleshooting
 
@@ -109,7 +109,7 @@ If you encounter issues while using Project Absence, consider the following:
 
 ## Disclaimer
 
-This tool is designed for **legal and ethical website analysis only**. Misusing it for unauthorized access or other illegal activities is strictly prohibited. The authors and contributors are not responsible for any misuse or legal consequences arising from its use.
+This tool is designed for **legal and ethical host analysis only**. Misusing it for unauthorized access or other illegal activities is strictly prohibited. The authors and contributors are not responsible for any misuse or legal consequences arising from its use.
 
 ## Contributing
 

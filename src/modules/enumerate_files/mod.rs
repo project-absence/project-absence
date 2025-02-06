@@ -68,7 +68,7 @@ impl Module for ModuleEnumerateFiles {
             let user_agents_file = include_str!("../../../resources/user_agents.txt");
             let user_agents_lines = user_agents_file.lines();
             let random_user_agent = user_agents_lines.clone().collect::<Vec<_>>()
-                [rand::thread_rng().gen_range(0..user_agents_lines.count())];
+                [rand::rng().random_range(0..user_agents_lines.count())];
 
             let uri = format!(
                 "{}/{}{}",

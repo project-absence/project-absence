@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::events;
 use crate::session::Session;
 
+pub mod banner_grabber;
 pub mod enumerate_files;
 pub mod enumerate_subdomains;
 pub mod passive_dns;
@@ -12,12 +13,14 @@ pub mod ready;
 
 pub enum Context {
     Domain(String),
+    OpenPort(String, u16),
     None,
 }
 
 pub fn get_context_for_event(event: &events::Type) -> Context {
     match event {
         events::Type::DiscoveredDomain(domain) => Context::Domain(domain.clone()),
+        events::Type::OpenPort(hostname, port) => Context::OpenPort(hostname.clone(), *port),
         _ => Context::None,
     }
 }

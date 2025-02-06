@@ -84,6 +84,12 @@ impl Session {
         // TODO: This deserves some cleanup
         self.register_module(modules::ready::ModuleReady::new());
 
+        if self.config.banner_grabber.enabled
+            && modules::banner_grabber::ModuleBannerGrabber::new().noise_level()
+                <= self.args.noise_level
+        {
+            self.register_module(modules::banner_grabber::ModuleBannerGrabber::new());
+        }
         if self.config.enumerate_files.enabled
             && modules::enumerate_files::ModuleEnumerateFiles::new().noise_level()
                 <= self.args.noise_level
@@ -205,6 +211,7 @@ impl Session {
                                 events::Type::DiscoveredDomain(_),
                                 events::Type::DiscoveredDomain(_)
                             )
+                            | (events::Type::OpenPort(_, _), events::Type::OpenPort(_, _))
                     )
                 }) {
                     thread::spawn({

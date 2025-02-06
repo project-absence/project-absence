@@ -31,6 +31,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             kkrypt0nn/project-absence:latest
             kkrypt0nn/project-absence:${{ env.VERSION_TAG }}

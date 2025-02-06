@@ -85,6 +85,16 @@ impl Node {
         self.data.entry(key).and_modify(|e| *e = new_value);
     }
 
+    pub fn get_or_init_map(&mut self, key: &str) -> serde_json::Map<String, Value> {
+        if !self.data.contains_key(key) {
+            self.data
+                .insert(key.to_string(), Value::Object(serde_json::Map::new()));
+        }
+        self.get_data(key)
+            .and_then(|value| value.as_object().cloned())
+            .expect("JSON object should exist")
+    }
+
     pub fn get_connections(&self) -> Vec<Node> {
         self.connections.clone()
     }

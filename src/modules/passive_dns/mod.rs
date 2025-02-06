@@ -78,7 +78,7 @@ impl Module for ModulePassiveDNS {
         let file = include_str!("../../../resources/user_agents.txt");
         let lines = file.lines();
         let random_user_agent =
-            lines.clone().collect::<Vec<_>>()[rand::thread_rng().gen_range(0..lines.count())];
+            lines.clone().collect::<Vec<_>>()[rand::rng().random_range(0..lines.count())];
 
         let response = session
             .get_http_client()
