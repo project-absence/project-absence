@@ -1,4 +1,3 @@
-use rand::Rng;
 use reqwest::StatusCode;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -8,7 +7,7 @@ use reqwest::header::USER_AGENT;
 use crate::database::node::{Node, Type};
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, logger};
+use crate::{events, helpers, logger};
 
 use super::NoiseLevel;
 
@@ -65,11 +64,6 @@ impl Module for ModuleEnumerateFiles {
             .unwrap_or_else(|| "php".to_string());
         let lines = BufReader::new(wordlist_file).lines();
         for line in lines.map_while(Result::ok) {
-            let user_agents_file = include_str!("../../../resources/user_agents.txt");
-            let user_agents_lines = user_agents_file.lines();
-            let random_user_agent = user_agents_lines.clone().collect::<Vec<_>>()
-                [rand::rng().random_range(0..user_agents_lines.count())];
-
             let uri = format!(
                 "{}/{}{}",
                 domain,
@@ -82,7 +76,7 @@ impl Module for ModuleEnumerateFiles {
             );
             if let Ok(response) = reqwest::blocking::Client::new()
                 .get(format!("https://{}", uri))
-                .header(USER_AGENT, random_user_agent)
+                .header(USER_AGENT, helpers::ua::get_random())
                 .send()
             {
                 if response.status() == StatusCode::OK {

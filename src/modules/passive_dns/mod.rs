@@ -1,5 +1,4 @@
 use chrono::{Duration, Utc};
-use rand::Rng;
 use serde_json::Value;
 use std::sync::Mutex;
 
@@ -9,7 +8,7 @@ use crate::database::node::{Node, Type};
 use crate::modules::passive_dns::crt_sh::CrtShItem;
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, flags, logger};
+use crate::{events, flags, helpers, logger};
 
 use super::NoiseLevel;
 
@@ -75,15 +74,10 @@ impl Module for ModulePassiveDNS {
         }
         self.process(domain.to_string());
 
-        let file = include_str!("../../../resources/user_agents.txt");
-        let lines = file.lines();
-        let random_user_agent =
-            lines.clone().collect::<Vec<_>>()[rand::rng().random_range(0..lines.count())];
-
         let response = session
             .get_http_client()
             .get(format!("https://crt.sh/?q={}&output=json", domain))
-            .header(USER_AGENT, random_user_agent)
+            .header(USER_AGENT, helpers::ua::get_random())
             .send();
         match response {
             Ok(response) => {

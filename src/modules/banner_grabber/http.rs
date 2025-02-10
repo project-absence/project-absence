@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
+use crate::helpers;
+
 use super::{Banner, BannerGrabber};
-use rand::Rng;
 use regex::Regex;
 use reqwest::{
     blocking::Client,
@@ -29,15 +30,10 @@ impl HttpBannerGrabber {
     }
 
     fn grab_server_header(&self, http_client: &Client) -> Option<String> {
-        let user_agents_file = include_str!("../../../resources/user_agents.txt");
-        let user_agents_lines = user_agents_file.lines();
-        let random_user_agent = user_agents_lines.clone().collect::<Vec<_>>()
-            [rand::rng().random_range(0..user_agents_lines.count())];
-
         let uri = format!("{}://{}:{}", self.protocol, self.hostname, self.port);
         if let Ok(response) = http_client
             .get(uri)
-            .header(USER_AGENT, random_user_agent)
+            .header(USER_AGENT, helpers::ua::get_random())
             .send()
         {
             if let Some(server) = response.headers().get(SERVER) {
@@ -50,15 +46,10 @@ impl HttpBannerGrabber {
     }
 
     fn grab_title_tag(&self, http_client: &Client) -> Option<String> {
-        let user_agents_file = include_str!("../../../resources/user_agents.txt");
-        let user_agents_lines = user_agents_file.lines();
-        let random_user_agent = user_agents_lines.clone().collect::<Vec<_>>()
-            [rand::rng().random_range(0..user_agents_lines.count())];
-
         let uri = format!("{}://{}:{}", self.protocol, self.hostname, self.port);
         if let Ok(response) = http_client
             .get(uri)
-            .header(USER_AGENT, random_user_agent)
+            .header(USER_AGENT, helpers::ua::get_random())
             .send()
         {
             if let Ok(text) = response.text() {

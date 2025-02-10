@@ -12,6 +12,7 @@ mod database;
 mod debug;
 mod events;
 mod flags;
+mod helpers;
 mod logger;
 mod modules;
 mod session;
