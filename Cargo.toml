@@ -23,7 +23,6 @@ clipboard = ["dep:clipboard"]
 chrono = "0.4.39"
 clap = { version = "4.5.28", features = ["derive"] }
 clipboard = { version = "0.5.0", optional = true }
-flume = "0.11.1"
 human_bytes = "0.4.3"
 memory-stats = "1.2.0"
 rand = "0.9.0"

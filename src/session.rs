@@ -1,13 +1,13 @@
 use std::fs::{create_dir_all, File};
 use std::io::{Error, Write};
 use std::path::PathBuf;
+use std::sync::mpsc::{Receiver, SyncSender};
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::{env, thread};
 
 #[cfg(feature = "clipboard")]
 use clipboard::{ClipboardContext, ClipboardProvider};
 
-use flume::{Receiver, Sender};
 use reqwest::blocking::Client;
 
 use crate::modules::Module;
@@ -20,8 +20,8 @@ pub struct Session {
     state: Arc<state::State>,
     http_client: Client,
 
-    sender: Sender<events::Type>,
-    receiver: Receiver<events::Type>,
+    sender: SyncSender<events::Type>,
+    receiver: Arc<Mutex<Receiver<events::Type>>>,
 
     modules: Mutex<Vec<Arc<Box<dyn Module>>>>,
 }
@@ -30,7 +30,7 @@ impl Session {
     pub fn new(
         args: args::Args,
         config: config::Config,
-        sender: Sender<events::Type>,
+        sender: SyncSender<events::Type>,
         receiver: Receiver<events::Type>,
     ) -> Arc<Self> {
         let domain_clone = args.clone().domain;
@@ -46,7 +46,7 @@ impl Session {
             http_client: Client::new(),
 
             sender,
-            receiver,
+            receiver: Arc::new(Mutex::new(receiver)),
 
             modules: Mutex::new(Vec::new()),
         })
@@ -139,7 +139,7 @@ impl Session {
             self.get_args().domain.clone(),
         ));
 
-        while let Ok(event) = self.receiver.recv() {
+        while let Ok(event) = self.receiver.lock().unwrap().recv() {
             if event == events::Type::FinishedTask {
                 self.get_state().decrement_tasks();
                 if self.get_state().is_debug() {

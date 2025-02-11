@@ -1,6 +1,7 @@
 use std::{
     env::consts::{ARCH, OS},
     process,
+    sync::mpsc,
 };
 
 use clap::Parser;
@@ -39,7 +40,7 @@ fn main() {
         }
     };
 
-    let (tx, rx) = flume::bounded::<events::Type>(100);
+    let (tx, rx) = mpsc::sync_channel::<events::Type>(100);
     let session = session::Session::new(args, config, tx, rx);
     session.register_config_modules();
 

@@ -1,4 +1,5 @@
 use std::net::{TcpStream, ToSocketAddrs};
+use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
@@ -186,7 +187,7 @@ impl Module for ModulePortScanner {
         match format!("{}:1337", domain).to_socket_addrs() {
             Ok(mut socket_addr) => {
                 if let Some(socket_addr) = socket_addr.next() {
-                    let (tx, rx) = flume::bounded::<u16>(10);
+                    let (tx, rx) = mpsc::sync_channel::<u16>(10);
                     let threads = 20;
                     let chunks: Vec<Vec<u16>> = ports
                         .chunks((ports.len() + threads - 1) / threads)

@@ -80,7 +80,10 @@ impl Module for ModuleBannerGrabber {
         };
 
         let banner = grabber.grab_banner(session.get_http_client());
-        if let Some(parent) = session.get_database().search(Type::Hostname, hostname) {
+        if let Some(parent) = session
+            .get_database()
+            .search(Type::Hostname, hostname.clone())
+        {
             let banners = parent.get_or_init_map("banners");
             let mut updated_banners = banners.clone();
             updated_banners.insert(port.to_string(), banner.to_json_value());
@@ -90,7 +93,10 @@ impl Module for ModuleBannerGrabber {
             );
             logger::println(
                 self.name(),
-                format!("Successfully grabbed a banner for the port {}", port),
+                format!(
+                    "Successfully grabbed a banner for the port {} of the hostname '{}'",
+                    port, hostname
+                ),
             )
         }
 
