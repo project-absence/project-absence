@@ -177,12 +177,15 @@ impl Session {
                     let expanded_result_path = if result_path.starts_with("~") {
                         let mut expanded_path = result_path.clone();
                         expanded_path.replace_range(0..1, &home_dir);
-                        PathBuf::from(expanded_path)
+                        expanded_path
                     } else {
-                        PathBuf::from(result_path)
+                        result_path.clone()
                     };
-                    if create_dir_all(expanded_result_path.parent().unwrap()).is_ok() {
-                        let mut file_result = File::create(expanded_result_path.clone())?;
+
+                    // JSON Result
+                    let json_result_path = PathBuf::from(format!("{}.json", expanded_result_path));
+                    if create_dir_all(json_result_path.parent().unwrap()).is_ok() {
+                        let mut file_result = File::create(json_result_path.clone())?;
                         if file_result
                             .write_all(self.get_database().get_as_pretty_json().as_bytes())
                             .is_ok()
@@ -190,8 +193,30 @@ impl Session {
                             logger::info(
                                 "",
                                 format!(
-                                    "Successfully wrote the resulting JSON database in '{}'",
-                                    expanded_result_path.display()
+                                    "Successfully wrote the JSON result in '{}'",
+                                    json_result_path.display()
+                                ),
+                            )
+                        };
+                    }
+
+                    // Markdown Result
+                    let markdown_result_path =
+                        PathBuf::from(format!("{}.md", expanded_result_path));
+                    if create_dir_all(markdown_result_path.parent().unwrap()).is_ok() {
+                        let mut file_result = File::create(markdown_result_path.clone())?;
+                        let hostnames_data = self.get_database().get_root().to_markdown();
+                        let content = format!(
+                            "# Analysis Report for '{}'\n\n## Hostnames\n\n{}",
+                            &self.get_args().domain,
+                            hostnames_data
+                        );
+                        if file_result.write_all(content.as_bytes()).is_ok() {
+                            logger::info(
+                                "",
+                                format!(
+                                    "Successfully wrote the Markdown report in '{}'",
+                                    markdown_result_path.display()
                                 ),
                             )
                         };

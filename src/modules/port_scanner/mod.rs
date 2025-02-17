@@ -4,6 +4,7 @@ use std::thread;
 use std::time::Duration;
 
 use port_service::get_service_for_tcp_port;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::database::node::Type;
@@ -15,9 +16,10 @@ use super::NoiseLevel;
 
 mod port_service;
 
-struct OpenPort {
-    port: u16,
-    potential_service: String,
+#[derive(Deserialize, Serialize)]
+pub struct OpenPort {
+    pub port: u16,
+    pub potential_service: String,
 }
 
 impl OpenPort {

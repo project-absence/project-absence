@@ -38,7 +38,8 @@ pub struct Args {
     pub noise_level: NoiseLevel,
 
     /// The file path of where the resulting JSON database will be saved to
-    #[arg(short = 'f', long, default_value = "~/.absence/result.json")]
+    /// Imporant: Without extension, they will be added when generating the various file types
+    #[arg(short = 'f', long, default_value = "~/.absence/result")]
     pub file: String,
 
     /// Whether to copy the resulting JSON database to the clipboard
