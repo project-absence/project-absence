@@ -47,6 +47,10 @@ pub struct Args {
     #[arg(short = 'C', long, default_value_t = false)]
     pub clipboard: bool,
 
+    /// The file path of the Lua script to load
+    #[arg(short = 's', long)]
+    pub script: Option<String>,
+
     /// Display the verison of the tool
     #[arg(short = 'V', long, default_value_t = false)]
     pub version: bool,

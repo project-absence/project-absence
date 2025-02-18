@@ -25,6 +25,7 @@ clap = { version = "4.5.28", features = ["derive"] }
 clipboard = { version = "0.5.0", optional = true }
 human_bytes = "0.4.3"
 memory-stats = "1.2.0"
+mlua = { version = "0.10.3", features = ["lua54", "send", "vendored"] }
 rand = "0.9.0"
 regex = "1.11.1"
 reqwest = { version = "0.12.12", features = ["blocking", "json"] }

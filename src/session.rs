@@ -84,6 +84,16 @@ impl Session {
         // TODO: This deserves some cleanup
         self.register_module(modules::ready::ModuleReady::new());
 
+        // Load Lua module
+        // TODO: Allow multiple Lua modules in the future. For the current PoC, one is fine.
+        if let Some(script) = &self.args.script {
+            let lua_module = modules::lua_script::ModuleLuaScript::new(script)
+                .expect("Failed to load Lua module");
+            if lua_module.noise_level() <= self.args.noise_level {
+                self.register_module(lua_module);
+            }
+        }
+
         if self.config.banner_grabber.enabled
             && modules::banner_grabber::ModuleBannerGrabber::new().noise_level()
                 <= self.args.noise_level

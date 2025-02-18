@@ -7,6 +7,7 @@ use crate::session::Session;
 pub mod banner_grabber;
 pub mod enumerate_files;
 pub mod enumerate_subdomains;
+pub mod lua_script;
 pub mod passive_dns;
 pub mod port_scanner;
 pub mod ready;
