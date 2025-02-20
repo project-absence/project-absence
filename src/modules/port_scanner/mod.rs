@@ -1,4 +1,4 @@
-use std::net::{TcpStream, ToSocketAddrs};
+use std::net::{IpAddr, TcpStream};
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
@@ -7,10 +7,10 @@ use port_service::get_service_for_tcp_port;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::database::node::Type;
+use crate::database::node::{Node, Type};
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, logger};
+use crate::{events, helpers, logger};
 
 use super::NoiseLevel;
 
@@ -185,56 +185,61 @@ impl Module for ModulePortScanner {
             self.common_ports.clone()
         };
 
-        // 1337 is just a dummy port because apparently it absolutely needs one
-        match format!("{}:1337", domain).to_socket_addrs() {
-            Ok(mut socket_addr) => {
-                if let Some(socket_addr) = socket_addr.next() {
-                    let (tx, rx) = mpsc::sync_channel::<u16>(10);
-                    let threads = 20;
-                    let chunks: Vec<Vec<u16>> = ports
-                        .chunks((ports.len() + threads - 1) / threads)
-                        .map(|chunk| chunk.to_vec())
-                        .collect();
-                    for chunk in chunks {
-                        let tx = tx.clone();
-                        thread::spawn(move || {
-                            for port in chunk {
-                                let addr = format!("{}:{}", socket_addr.ip(), port);
-                                let timeout = Duration::from_millis(500);
-                                if TcpStream::connect_timeout(&addr.parse().unwrap(), timeout)
-                                    .is_ok()
-                                {
-                                    tx.send(port).unwrap();
-                                }
+        let ip_addr = session
+            .get_database()
+            .get_root()
+            .find(&Node::new(Type::Hostname, domain.clone()))
+            .and_then(|node| {
+                node.get_data("ip")
+                    .and_then(|ip| ip.as_str().unwrap().parse::<IpAddr>().ok())
+            })
+            .or_else(|| helpers::network::get_ip_addr(&domain));
+
+        match ip_addr {
+            Some(ip_addr) => {
+                let (tx, rx) = mpsc::sync_channel::<u16>(10);
+                let threads = 20;
+                let chunks: Vec<Vec<u16>> = ports
+                    .chunks((ports.len() + threads - 1) / threads)
+                    .map(|chunk| chunk.to_vec())
+                    .collect();
+                for chunk in chunks {
+                    let tx = tx.clone();
+                    thread::spawn(move || {
+                        for port in chunk {
+                            let addr = format!("{}:{}", ip_addr, port);
+                            let timeout = Duration::from_millis(500);
+                            if TcpStream::connect_timeout(&addr.parse().unwrap(), timeout).is_ok() {
+                                tx.send(port).unwrap();
                             }
-                        });
-                    }
-                    drop(tx);
-
-                    let mut open_ports = Vec::<Value>::new();
-                    while let Ok(port) = rx.recv() {
-                        open_ports.push(OpenPort::new(port).into());
-                        session.emit(events::Type::OpenPort(domain.clone(), port));
-                    }
-
-                    if let Some(parent) = session
-                        .get_database()
-                        .search(Type::Hostname, domain.clone())
-                    {
-                        parent.add_data(String::from("ports"), open_ports.clone().into());
-                    }
-                    logger::println(
-                        self.name(),
-                        format!(
-                            "Found {} open ports for the domain '{}'",
-                            open_ports.len(),
-                            domain
-                        ),
-                    )
+                        }
+                    });
                 }
+                drop(tx);
+
+                let mut open_ports = Vec::<Value>::new();
+                while let Ok(port) = rx.recv() {
+                    open_ports.push(OpenPort::new(port).into());
+                    session.emit(events::Type::OpenPort(domain.clone(), port));
+                }
+
+                if let Some(parent) = session
+                    .get_database()
+                    .search(Type::Hostname, domain.clone())
+                {
+                    parent.add_data(String::from("ports"), open_ports.clone().into());
+                }
+                logger::println(
+                    self.name(),
+                    format!(
+                        "Found {} open ports for the domain '{}'",
+                        open_ports.len(),
+                        domain
+                    ),
+                );
                 Ok(())
             }
-            Err(_) => Err(format!("Hostname '{}' not found", domain)),
+            None => Err(format!("Hostname '{}' not found", domain)),
         }
     }
 }

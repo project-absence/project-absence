@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 use reqwest::header::USER_AGENT;
+use serde_json::Value;
 
 use crate::database::node::{Node, Type};
 use crate::modules::{Context, Module};
@@ -72,11 +73,18 @@ impl Module for ModuleEnumerateSubdomains {
                     self.name(),
                     format!("Discovered '{}' as a new subdomain", uri),
                 );
+
                 if let Some(parent) = session
                     .get_database()
                     .search(Type::Hostname, domain.clone())
                 {
-                    let new_node = Node::new(Type::Hostname, uri.clone());
+                    let mut new_node = Node::new(Type::Hostname, uri.clone());
+                    if let Some(ip_addr) = helpers::network::get_ip_addr(&uri) {
+                        new_node.add_data(String::from("ip"), Value::String(ip_addr.to_string()));
+                        if let Some(geoinfo) = helpers::network::geolocate_ip(ip_addr) {
+                            new_node.add_data(String::from("geoinfo"), geoinfo.into())
+                        }
+                    }
                     parent.connect(new_node);
                 }
                 session.get_state().discover_subdomain(uri.clone());

@@ -135,6 +135,7 @@ impl Module for ModulePassiveDNS {
                                     }
                                 ),
                             );
+
                             if let Some(parent) = session
                                 .get_database()
                                 .search(Type::Hostname, domain.clone())
@@ -142,6 +143,15 @@ impl Module for ModulePassiveDNS {
                                 let mut new_node = Node::new(Type::Hostname, name_value.clone());
                                 new_node
                                     .add_data(String::from("flags"), Value::Number(flags.into()));
+                                if let Some(ip_addr) = helpers::network::get_ip_addr(name_value) {
+                                    new_node.add_data(
+                                        String::from("ip"),
+                                        Value::String(ip_addr.to_string()),
+                                    );
+                                    if let Some(geoinfo) = helpers::network::geolocate_ip(ip_addr) {
+                                        new_node.add_data(String::from("geoinfo"), geoinfo.into())
+                                    }
+                                }
                                 parent.connect(new_node);
                             }
                             session
