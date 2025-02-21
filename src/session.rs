@@ -80,8 +80,8 @@ impl Session {
         modules.push(Arc::new(Box::new(module)));
     }
 
+    // TODO: This deserves some cleanup
     pub fn register_config_modules(&self) {
-        // TODO: This deserves some cleanup
         self.register_module(modules::ready::ModuleReady::new());
 
         // Load Lua module
@@ -99,6 +99,11 @@ impl Session {
                 <= self.args.noise_level
         {
             self.register_module(modules::banner_grabber::ModuleBannerGrabber::new());
+        }
+        if self.config.dork.enabled
+            && modules::dork::ModuleDork::new().noise_level() <= self.args.noise_level
+        {
+            self.register_module(modules::dork::ModuleDork::new());
         }
         if self.config.enumerate_files.enabled
             && modules::enumerate_files::ModuleEnumerateFiles::new().noise_level()

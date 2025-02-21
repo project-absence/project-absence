@@ -5,6 +5,7 @@ use crate::events;
 use crate::session::Session;
 
 pub mod banner_grabber;
+pub mod dork;
 pub mod enumerate_files;
 pub mod enumerate_subdomains;
 pub mod lua_script;

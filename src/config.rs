@@ -7,6 +7,9 @@ use crate::logger;
 const DEFAULT_CONFIG: &str = r#"[banner_grabber]
 enabled = false
 
+[dork]
+enabled = false
+
 [enumerate_files]
 enabled = false
 
@@ -47,6 +50,7 @@ pub fn create_file_if_not_existing() {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
     pub banner_grabber: BannerGrabberConfig,
+    pub dork: DorkConfig,
     pub enumerate_files: EnumerateFilesConfig,
     pub enumerate_subdomains: EnumerateSubdomainsConfig,
     pub passive_dns: PassiveDNSConfig,
@@ -55,6 +59,12 @@ pub struct Config {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BannerGrabberConfig {
+    /// Whether the module is enabled
+    pub enabled: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct DorkConfig {
     /// Whether the module is enabled
     pub enabled: bool,
 }
