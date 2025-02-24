@@ -21,6 +21,9 @@ enabled = false
 
 [port_scanner]
 enabled = false
+
+[screenshot_grabber]
+enabled = false
 "#;
 
 pub fn create_file_if_not_existing() {
@@ -55,6 +58,7 @@ pub struct Config {
     pub enumerate_subdomains: EnumerateSubdomainsConfig,
     pub passive_dns: PassiveDNSConfig,
     pub port_scanner: PortScannerConfig,
+    pub screenshot_grabber: ScreenshotGrabberConfig,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -108,4 +112,16 @@ pub struct PortScannerConfig {
     ///
     /// If this is option is not provided, it will use the top 1000 most common ports of nmap
     pub range: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ScreenshotGrabberConfig {
+    /// Whether the module is enabled
+    pub enabled: bool,
+    /// Path for Chrome or Chromium
+    /// If unspecified, it will try to automatically detect a suitable binary
+    pub chrome_path: Option<String>,
+    /// Whether the screenshots should be saved as separate file
+    /// If false, it will base64 encode the screenshot and save it in the JSON file
+    pub save_as_file: Option<bool>,
 }

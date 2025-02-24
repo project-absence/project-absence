@@ -3,7 +3,6 @@
 These are personal TODOs, if you'd like to contribute to the project, please do not work on these features; they are also a way for me to learn more things. Many many thanks :D
 
 ## Tool
-- [ ] Take a screenshot when a new hostname has been discovered -> https://crates.io/crates/headless_chrome
 - [ ] Reverse IP lookup to find other domains running on the same IP
 - [ ] Enumerate emails for newly discovered hostnames
 - [ ] Google Dork module, find emails - allow other search engines as well

@@ -200,7 +200,7 @@ impl Module for ModulePortScanner {
                 let (tx, rx) = mpsc::sync_channel::<u16>(10);
                 let threads = 20;
                 let chunks: Vec<Vec<u16>> = ports
-                    .chunks((ports.len() + threads - 1) / threads)
+                    .chunks(ports.len().div_ceil(threads))
                     .map(|chunk| chunk.to_vec())
                     .collect();
                 for chunk in chunks {

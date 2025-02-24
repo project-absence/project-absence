@@ -29,7 +29,9 @@ impl Module for ModuleReady {
     }
 
     fn description(&self) -> String {
-        String::from("This module is responsible to know when Project Absence is ready and will start to do the work")
+        String::from(
+            "This module is responsible to know when Project Absence is ready and will start to do the work",
+        )
     }
 
     fn subscribers(&self) -> Vec<events::Type> {

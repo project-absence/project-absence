@@ -37,10 +37,9 @@ pub struct Args {
     #[arg(value_enum, short = 'n', long, default_value_t = NoiseLevel::Medium)]
     pub noise_level: NoiseLevel,
 
-    /// The file path of where the resulting JSON database will be saved to
-    /// Imporant: Without extension, they will be added when generating the various file types
-    #[arg(short = 'f', long, default_value = "~/.absence/result")]
-    pub file: String,
+    /// The path of where the output will be saved to
+    #[arg(short = 'o', long, default_value = "~/.absence")]
+    pub output: String,
 
     /// Whether to copy the resulting JSON database to the clipboard
     #[cfg(feature = "clipboard")]
