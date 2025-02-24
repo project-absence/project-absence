@@ -1,15 +1,15 @@
 use std::env;
-use std::fs::File;
 use std::fs::create_dir_all;
+use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
 
-use base64::Engine;
 use base64::engine::general_purpose;
-use headless_chrome::Browser;
-use headless_chrome::LaunchOptions;
+use base64::Engine;
 use headless_chrome::browser;
 use headless_chrome::protocol::cdp::Page;
+use headless_chrome::Browser;
+use headless_chrome::LaunchOptions;
 use serde_json::Value;
 
 use crate::database::node::Type;

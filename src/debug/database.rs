@@ -1,4 +1,4 @@
-use crate::database::{Database, node::Node};
+use crate::database::{node::Node, Database};
 
 pub fn render_compact(database: &mut Database) {
     let root_node = database.get_root();

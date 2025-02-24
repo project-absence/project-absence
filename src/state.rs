@@ -1,7 +1,7 @@
 use std::{
     sync::{
-        Arc, Mutex,
         atomic::{AtomicUsize, Ordering},
+        Arc, Mutex,
     },
     thread::sleep,
     time::Duration,
