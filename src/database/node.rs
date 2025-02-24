@@ -134,6 +134,19 @@ impl Node {
     }
 
     pub fn to_markdown(&self) -> String {
+        let screenshot = if let Some(screenshot) = self.get_data("screenshot") {
+            if screenshot.as_str().unwrap().ends_with(".png") {
+                Some(format!(
+                    "![Screenshot of '{}']({})",
+                    self.value,
+                    screenshot.as_str().unwrap()
+                ))
+            } else {
+                None
+            }
+        } else {
+            None
+        };
         let banners = if let Some(banners) = self.get_data("banners") {
             let mut result = String::from("#### Banners");
             let obj = banners.as_object().unwrap();
@@ -190,6 +203,9 @@ impl Node {
             .join("\n\n");
 
         let mut sections = vec![format!("### {}", self.value)];
+        if let Some(screenshot) = screenshot {
+            sections.push(screenshot);
+        }
         if let Some(banners) = banners {
             sections.push(banners);
         }

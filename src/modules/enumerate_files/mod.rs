@@ -31,7 +31,9 @@ impl Module for ModuleEnumerateFiles {
     }
 
     fn description(&self) -> String {
-        String::from("This module will aggressively try to find files based on the given wordlist and extension")
+        String::from(
+            "This module will aggressively try to find files based on the given wordlist and extension",
+        )
     }
 
     fn noise_level(&self) -> NoiseLevel {

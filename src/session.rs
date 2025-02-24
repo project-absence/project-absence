@@ -1,4 +1,4 @@
-use std::fs::{create_dir_all, File};
+use std::fs::{File, create_dir_all};
 use std::io::{Error, Write};
 use std::path::PathBuf;
 use std::sync::mpsc::{Receiver, SyncSender};
@@ -128,6 +128,12 @@ impl Session {
         {
             self.register_module(modules::port_scanner::ModulePortScanner::new());
         }
+        if self.config.screenshot_grabber.enabled
+            && modules::screenshot_grabber::ModuleScreenshotGrabber::new().noise_level()
+                <= self.args.noise_level
+        {
+            self.register_module(modules::screenshot_grabber::ModuleScreenshotGrabber::new());
+        }
     }
 
     pub fn emit(&self, event: events::Type) {
@@ -188,7 +194,7 @@ impl Session {
                     let home_dir = env::var("HOME")
                         .or_else(|_| env::var("USERPROFILE"))
                         .unwrap_or_else(|_| String::from(""));
-                    let result_path = &self.get_args().file;
+                    let result_path = &self.get_args().output;
                     let expanded_result_path = if result_path.starts_with("~") {
                         let mut expanded_path = result_path.clone();
                         expanded_path.replace_range(0..1, &home_dir);
@@ -198,7 +204,8 @@ impl Session {
                     };
 
                     // JSON Result
-                    let json_result_path = PathBuf::from(format!("{}.json", expanded_result_path));
+                    let json_result_path =
+                        PathBuf::from(format!("{}/results.json", expanded_result_path));
                     if create_dir_all(json_result_path.parent().unwrap()).is_ok() {
                         let mut file_result = File::create(json_result_path.clone())?;
                         if file_result
@@ -217,7 +224,7 @@ impl Session {
 
                     // Markdown Result
                     let markdown_result_path =
-                        PathBuf::from(format!("{}.md", expanded_result_path));
+                        PathBuf::from(format!("{}/results.md", expanded_result_path));
                     if create_dir_all(markdown_result_path.parent().unwrap()).is_ok() {
                         let mut file_result = File::create(markdown_result_path.clone())?;
                         let hostnames_data = self.get_database().get_root().to_markdown();
