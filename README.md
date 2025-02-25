@@ -113,8 +113,8 @@ This tool is designed for **legal and ethical host analysis only**. Misusing it 
 
 ## Contributing
 
-People may contribute by following the [Contributing Guidelines](./CONTRIBUTING.md) and
-the [Code of Conduct](./CODE_OF_CONDUCT.md)
+People may contribute by following the [Contributing Guidelines](https://github.com/project-absence/.github/blob/main/CONTRIBUTING.md) and
+the [Code of Conduct](https://github.com/project-absence/.github/blob/main/CODE_OF_CONDUCT.md)
 
 ## License
 
