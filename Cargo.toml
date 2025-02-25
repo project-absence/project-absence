@@ -6,11 +6,8 @@ license = "MIT"
 readme = "README.md"
 include = [
     "/Cargo.toml",
-    "/CODE_OF_CONDUCT.md",
-    "/CONTRIBUTING.md",
     "/LICENSE.md",
     "/README.md",
-    "/SECURITY.md",
     "/src/**",
 ]
 repository = "https://github.com/project-absence/project-absence"
