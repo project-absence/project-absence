@@ -86,9 +86,8 @@ impl Module for ModuleEnumerateFiles {
                         self.name(),
                         format!("Discovered '{}' as an existing file", uri),
                     );
-                    if let Some(parent) = session
-                        .get_database()
-                        .search(Type::Hostname, domain.clone())
+                    if let Some(parent) =
+                        session.get_database().search(Type::Domain, domain.clone())
                     {
                         let new_node = Node::new(Type::File, uri.clone());
                         parent.connect(new_node);

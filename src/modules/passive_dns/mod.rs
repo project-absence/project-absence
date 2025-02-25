@@ -46,9 +46,7 @@ impl Module for ModulePassiveDNS {
     }
 
     fn description(&self) -> String {
-        String::from(
-            "This module will perform a passive discovery of new subdomains by using crt.sh",
-        )
+        String::from("This module will perform a passive discovery of new domains by using crt.sh")
     }
 
     fn noise_level(&self) -> NoiseLevel {
@@ -94,7 +92,7 @@ impl Module for ModulePassiveDNS {
                         }
                         if !session
                             .get_state()
-                            .has_discovered_subdomain(name_value.to_string())
+                            .has_discovered_domain(name_value.to_string())
                         {
                             let now = Utc::now();
                             let mut flags = flags::ZERO;
@@ -105,7 +103,7 @@ impl Module for ModulePassiveDNS {
                                 continue;
                             }
                             if has_expired {
-                                flags |= flags::hostname::HAS_EXPIRED;
+                                flags |= flags::domain::HAS_EXPIRED;
                             }
 
                             // Check if the certificate has been created within the last 24 hours
@@ -115,7 +113,7 @@ impl Module for ModulePassiveDNS {
                                 continue;
                             }
                             if is_recent {
-                                flags |= flags::hostname::IS_RECENT;
+                                flags |= flags::domain::IS_RECENT;
                             }
 
                             logger::println(
@@ -136,11 +134,10 @@ impl Module for ModulePassiveDNS {
                                 ),
                             );
 
-                            if let Some(parent) = session
-                                .get_database()
-                                .search(Type::Hostname, domain.clone())
+                            if let Some(parent) =
+                                session.get_database().search(Type::Domain, domain.clone())
                             {
-                                let mut new_node = Node::new(Type::Hostname, name_value.clone());
+                                let mut new_node = Node::new(Type::Domain, name_value.clone());
                                 new_node
                                     .add_data(String::from("flags"), Value::Number(flags.into()));
                                 if let Some(ip_addr) = helpers::network::get_ip_addr(name_value) {
@@ -154,9 +151,7 @@ impl Module for ModulePassiveDNS {
                                 }
                                 parent.connect(new_node);
                             }
-                            session
-                                .get_state()
-                                .discover_subdomain(name_value.to_string());
+                            session.get_state().discover_domain(name_value.to_string());
                             session.emit(events::Type::DiscoveredDomain(name_value.clone()));
                         }
                     }

@@ -2,9 +2,9 @@ use std::net::{IpAddr, ToSocketAddrs};
 
 use serde::{Deserialize, Serialize};
 
-pub fn get_ip_addr(hostname: &str) -> Option<IpAddr> {
+pub fn get_ip_addr(domain: &str) -> Option<IpAddr> {
     // 1337 is just a dummy port because apparently it absolutely needs one
-    match format!("{}:1337", hostname).to_socket_addrs() {
+    match format!("{}:1337", domain).to_socket_addrs() {
         Ok(mut socket_addr) => socket_addr.next().map(|addr| addr.ip()),
         Err(_) => None,
     }

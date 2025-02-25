@@ -67,18 +67,15 @@ impl Module for ModuleEnumerateSubdomains {
                 .header(USER_AGENT, helpers::ua::get_random())
                 .send()
                 .is_ok()
-                && !session.get_state().has_discovered_subdomain(uri.clone())
+                && !session.get_state().has_discovered_domain(uri.clone())
             {
                 logger::println(
                     self.name(),
                     format!("Discovered '{}' as a new subdomain", uri),
                 );
 
-                if let Some(parent) = session
-                    .get_database()
-                    .search(Type::Hostname, domain.clone())
-                {
-                    let mut new_node = Node::new(Type::Hostname, uri.clone());
+                if let Some(parent) = session.get_database().search(Type::Domain, domain.clone()) {
+                    let mut new_node = Node::new(Type::Domain, uri.clone());
                     if let Some(ip_addr) = helpers::network::get_ip_addr(&uri) {
                         new_node.add_data(String::from("ip"), Value::String(ip_addr.to_string()));
                         if let Some(geoinfo) = helpers::network::geolocate_ip(ip_addr) {
@@ -87,7 +84,7 @@ impl Module for ModuleEnumerateSubdomains {
                     }
                     parent.connect(new_node);
                 }
-                session.get_state().discover_subdomain(uri.clone());
+                session.get_state().discover_domain(uri.clone());
                 session.emit(events::Type::DiscoveredDomain(uri));
             }
         }

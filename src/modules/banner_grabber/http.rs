@@ -10,20 +10,20 @@ use reqwest::{
 };
 
 pub struct HttpBannerGrabber {
-    hostname: String,
+    domain: String,
     port: u16,
     protocol: String,
 }
 
 impl HttpBannerGrabber {
-    pub fn new(hostname: String, port: u16) -> Self {
+    pub fn new(domain: String, port: u16) -> Self {
         let protocol = match port {
             80 => String::from("http"),
             443 => String::from("https"),
             _ => todo!(),
         };
         HttpBannerGrabber {
-            hostname,
+            domain,
             port,
             protocol,
         }
@@ -64,7 +64,7 @@ impl HttpBannerGrabber {
 impl BannerGrabber for HttpBannerGrabber {
     fn grab_banner(&self, http_client: &Client) -> Banner {
         let mut http_banner = HashMap::new();
-        let uri = format!("{}://{}:{}", self.protocol, self.hostname, self.port);
+        let uri = format!("{}://{}:{}", self.protocol, self.domain, self.port);
         if let Ok(response) = http_client
             .get(uri)
             .header(USER_AGENT, helpers::ua::get_random())

@@ -23,7 +23,7 @@ pub enum Context {
 pub fn get_context_for_event(event: &events::Type) -> Context {
     match event {
         events::Type::DiscoveredDomain(domain) => Context::Domain(domain.clone()),
-        events::Type::OpenPort(hostname, port) => Context::OpenPort(hostname.clone(), *port),
+        events::Type::OpenPort(domain, port) => Context::OpenPort(domain.clone(), *port),
         _ => Context::None,
     }
 }

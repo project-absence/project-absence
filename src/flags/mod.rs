@@ -1,4 +1,4 @@
-pub mod hostname;
+pub mod domain;
 
 pub const ZERO: usize = 0;
 

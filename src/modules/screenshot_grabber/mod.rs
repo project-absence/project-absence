@@ -44,7 +44,7 @@ impl Module for ModuleScreenshotGrabber {
     }
 
     fn description(&self) -> String {
-        String::from("This module will take screenshots of newly discovered hostnames")
+        String::from("This module will take screenshots of newly discovered domains")
     }
 
     fn subscribers(&self) -> Vec<events::Type> {
@@ -116,15 +116,12 @@ impl Module for ModuleScreenshotGrabber {
             general_purpose::STANDARD.encode(&screenshot)
         };
 
-        if let Some(parent) = session
-            .get_database()
-            .search(Type::Hostname, domain.clone())
-        {
+        if let Some(parent) = session.get_database().search(Type::Domain, domain.clone()) {
             parent.add_data(String::from("screenshot"), Value::String(save_data));
             logger::println(
                 self.name(),
                 format!(
-                    "Successfully grabbed a screenshot for the hostname '{}'",
+                    "Successfully grabbed a screenshot for the domain '{}'",
                     domain
                 ),
             )

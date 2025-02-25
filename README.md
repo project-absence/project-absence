@@ -20,7 +20,7 @@
 
 ### 👁️ Uncover the unseen
 
-Project Absence is a tool for analyzing your hosts. Its features include finding open ports, discovering subdomains, discovering files and more will be coming with the time.
+Project Absence is a tool for analyzing your domains. Its features include finding open ports, discovering subdomains, discovering files and more will be coming with the time.
 
 ## Getting Started
 
