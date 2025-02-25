@@ -76,18 +76,17 @@ impl Module for ModuleDork {
                     let subdomain = subdomain.as_str();
                     if !session
                         .get_state()
-                        .has_discovered_subdomain(subdomain.to_string())
+                        .has_discovered_domain(subdomain.to_string())
                     {
                         logger::println(
                             self.name(),
                             format!("Discovered '{}' as a new subdomain", subdomain),
                         );
 
-                        if let Some(parent) = session
-                            .get_database()
-                            .search(Type::Hostname, domain.clone())
+                        if let Some(parent) =
+                            session.get_database().search(Type::Domain, domain.clone())
                         {
-                            let mut new_node = Node::new(Type::Hostname, subdomain.to_string());
+                            let mut new_node = Node::new(Type::Domain, subdomain.to_string());
                             if let Some(ip_addr) = helpers::network::get_ip_addr(subdomain) {
                                 new_node.add_data(
                                     String::from("ip"),
@@ -99,9 +98,7 @@ impl Module for ModuleDork {
                             }
                             parent.connect(new_node);
                         }
-                        session
-                            .get_state()
-                            .discover_subdomain(subdomain.to_string());
+                        session.get_state().discover_domain(subdomain.to_string());
                         session.emit(events::Type::DiscoveredDomain(subdomain.to_string()));
                     }
                 }

@@ -6,7 +6,7 @@ pub enum Type {
     FinishedTask,
     /// String: the discovered domain
     DiscoveredDomain(String),
-    /// String: the hostname
+    /// String: the domain
     /// u16: the port that is open
     OpenPort(String, u16),
 }

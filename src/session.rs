@@ -40,7 +40,7 @@ impl Session {
             args,
             config,
             database: Arc::new(Mutex::new(database::Database::new(
-                database::node::Node::new(database::node::Type::Hostname, domain_clone),
+                database::node::Node::new(database::node::Type::Domain, domain_clone),
             ))),
             state: Arc::new(state::State::new(is_verbose, is_debug)),
             http_client: Client::new(),
@@ -227,11 +227,11 @@ impl Session {
                         PathBuf::from(format!("{}/results.md", expanded_result_path));
                     if create_dir_all(markdown_result_path.parent().unwrap()).is_ok() {
                         let mut file_result = File::create(markdown_result_path.clone())?;
-                        let hostnames_data = self.get_database().get_root().to_markdown();
+                        let domains_data = self.get_database().get_root().to_markdown();
                         let content = format!(
-                            "# Analysis Report for '{}'\n\n## Hostnames\n\n{}",
+                            "# Analysis Report for '{}'\n\n## Domains\n\n{}",
                             &self.get_args().domain,
-                            hostnames_data
+                            domains_data
                         );
                         if file_result.write_all(content.as_bytes()).is_ok() {
                             logger::info(

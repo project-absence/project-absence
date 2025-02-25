@@ -188,7 +188,7 @@ impl Module for ModulePortScanner {
         let ip_addr = session
             .get_database()
             .get_root()
-            .find(&Node::new(Type::Hostname, domain.clone()))
+            .find(&Node::new(Type::Domain, domain.clone()))
             .and_then(|node| {
                 node.get_data("ip")
                     .and_then(|ip| ip.as_str().unwrap().parse::<IpAddr>().ok())
@@ -223,10 +223,7 @@ impl Module for ModulePortScanner {
                     session.emit(events::Type::OpenPort(domain.clone(), port));
                 }
 
-                if let Some(parent) = session
-                    .get_database()
-                    .search(Type::Hostname, domain.clone())
-                {
+                if let Some(parent) = session.get_database().search(Type::Domain, domain.clone()) {
                     parent.add_data(String::from("ports"), open_ports.clone().into());
                 }
                 logger::println(
@@ -239,7 +236,7 @@ impl Module for ModulePortScanner {
                 );
                 Ok(())
             }
-            None => Err(format!("Hostname '{}' not found", domain)),
+            None => Err(format!("No IP address found for domain '{}'", domain)),
         }
     }
 }

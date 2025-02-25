@@ -4,7 +4,7 @@ These are personal TODOs, if you'd like to contribute to the project, please do 
 
 ## Tool
 - [ ] Reverse IP lookup to find other domains running on the same IP
-- [ ] Enumerate emails for newly discovered hostnames
+- [ ] Enumerate emails for newly discovered domains
 - [ ] Google Dork module, find emails - allow other search engines as well
 - [ ] Have a web UI to run locally for the tool, will display running scans, etc.
 - [ ] UDP port scanner and make it a config of the `scanner:port` module

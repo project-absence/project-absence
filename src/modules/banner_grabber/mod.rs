@@ -61,15 +61,15 @@ impl Module for ModuleBannerGrabber {
     }
 
     fn execute(&self, session: &Session, context: Context) -> Result<(), String> {
-        let (hostname, port) = match context {
-            Context::OpenPort(hostname, port) => (hostname, port),
+        let (domain, port) = match context {
+            Context::OpenPort(domain, port) => (domain, port),
             _ => {
                 return Err("Received wrong context, exiting module".to_string());
             }
         };
 
         let grabber: Box<dyn BannerGrabber> = match port {
-            80 | 443 => Box::new(HttpBannerGrabber::new(hostname.clone(), port)),
+            80 | 443 => Box::new(HttpBannerGrabber::new(domain.clone(), port)),
             _ => {
                 logger::info(
                     self.name(),
@@ -80,10 +80,7 @@ impl Module for ModuleBannerGrabber {
         };
 
         let banner = grabber.grab_banner(session.get_http_client());
-        if let Some(parent) = session
-            .get_database()
-            .search(Type::Hostname, hostname.clone())
-        {
+        if let Some(parent) = session.get_database().search(Type::Domain, domain.clone()) {
             let banners = parent.get_or_init_map("banners");
             let mut updated_banners = banners.clone();
             updated_banners.insert(port.to_string(), banner.to_json_value());
@@ -94,8 +91,8 @@ impl Module for ModuleBannerGrabber {
             logger::println(
                 self.name(),
                 format!(
-                    "Successfully grabbed a banner for the port {} of the hostname '{}'",
-                    port, hostname
+                    "Successfully grabbed a banner for the port {} of the domain '{}'",
+                    port, domain
                 ),
             )
         }

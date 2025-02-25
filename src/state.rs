@@ -19,7 +19,7 @@ pub struct State {
     verbose: bool,
     debug: bool,
 
-    discovered_subdomains: Mutex<Vec<String>>,
+    discovered_domains: Mutex<Vec<String>>,
 }
 
 impl State {
@@ -30,7 +30,7 @@ impl State {
             verbose,
             debug,
 
-            discovered_subdomains: Mutex::new(Vec::new()),
+            discovered_domains: Mutex::new(Vec::new()),
         }
     }
 
@@ -90,14 +90,11 @@ impl State {
         self.is_debug() || self.is_verbose()
     }
 
-    pub fn discover_subdomain(&self, subdomain: String) {
-        self.discovered_subdomains.lock().unwrap().push(subdomain)
+    pub fn discover_domain(&self, domain: String) {
+        self.discovered_domains.lock().unwrap().push(domain)
     }
 
-    pub fn has_discovered_subdomain(&self, subdomain: String) -> bool {
-        self.discovered_subdomains
-            .lock()
-            .unwrap()
-            .contains(&subdomain)
+    pub fn has_discovered_domain(&self, domain: String) -> bool {
+        self.discovered_domains.lock().unwrap().contains(&domain)
     }
 }

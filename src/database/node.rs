@@ -7,15 +7,15 @@ use crate::{flags, modules::port_scanner::OpenPort};
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Type {
-    Hostname,
+    Domain,
     File,
 }
 
 impl fmt::Display for Type {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Type::Hostname => {
-                write!(formatter, "hostname")
+            Type::Domain => {
+                write!(formatter, "domain")
             }
             Type::File => {
                 write!(formatter, "file")
@@ -167,11 +167,11 @@ impl Node {
                 "\n- `IS_RECENT` => {}\n- `HAS_EXPIRED` => {}",
                 flags::contains_to_markdown(
                     flags.as_u64().unwrap() as usize,
-                    flags::hostname::IS_RECENT
+                    flags::domain::IS_RECENT
                 ),
                 flags::contains_to_markdown(
                     flags.as_u64().unwrap() as usize,
-                    flags::hostname::HAS_EXPIRED
+                    flags::domain::HAS_EXPIRED
                 )
             )
             .as_str();
