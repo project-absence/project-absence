@@ -1,7 +1,7 @@
 [package]
 name = "project-absence"
 description = "👁️  Uncover the unseen"
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
 readme = "README.md"
 include = [
@@ -11,7 +11,7 @@ include = [
     "/src/**",
 ]
 repository = "https://github.com/project-absence/project-absence"
-edition = "2021"
+edition = "2024"
 
 [features]
 clipboard = ["dep:clipboard"]

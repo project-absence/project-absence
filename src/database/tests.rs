@@ -1,6 +1,6 @@
 use crate::database::{
-    node::{Node, Type},
     Database,
+    node::{Node, Type},
 };
 
 use serde_json::Value;
@@ -52,25 +52,35 @@ fn search_node() {
     let root_node = database.get_root();
     root_node.add(Type::Domain, String::from("go.krypton.ninja"));
     root_node.add(Type::Domain, String::from("status.krypton.ninja"));
-    assert!(database
-        .search(Type::Domain, String::from("go.krypton.ninja"))
-        .is_some());
-    assert!(database
-        .search(Type::Domain, String::from("status.krypton.ninja"))
-        .is_some());
-    assert!(database
-        .search(Type::Domain, String::from("www.krypton.ninja"))
-        .is_none());
+    assert!(
+        database
+            .search(Type::Domain, String::from("go.krypton.ninja"))
+            .is_some()
+    );
+    assert!(
+        database
+            .search(Type::Domain, String::from("status.krypton.ninja"))
+            .is_some()
+    );
+    assert!(
+        database
+            .search(Type::Domain, String::from("www.krypton.ninja"))
+            .is_none()
+    );
 }
 
 #[test]
 fn search_node_root() {
     let node = Node::new(Type::Domain, String::from("krypton.ninja"));
     let mut database = Database::new(node.clone());
-    assert!(database
-        .search(Type::Domain, String::from("krypton.ninja"))
-        .is_some());
-    assert!(database
-        .search(Type::Domain, String::from("go.krypton.ninja"))
-        .is_none());
+    assert!(
+        database
+            .search(Type::Domain, String::from("krypton.ninja"))
+            .is_some()
+    );
+    assert!(
+        database
+            .search(Type::Domain, String::from("go.krypton.ninja"))
+            .is_none()
+    );
 }

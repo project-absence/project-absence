@@ -2,7 +2,6 @@
 
 # Project Absence
 
-[![Docs.rs Badge](https://img.shields.io/badge/docs.rs-project--absence-61c192.svg)](https://docs.rs/project-absence)
 [![Crates.io Badge](https://img.shields.io/crates/v/project-absence.svg?color=fe7d37)](https://crates.io/crates/project-absence)
 [![Docker Badge](https://img.shields.io/docker/v/kkrypt0nn/project-absence?logo=docker)](https://hub.docker.com/r/kkrypt0nn/project-absence)
 [![CI Badge](https://github.com/project-absence/project-absence/actions/workflows/ci.yml/badge.svg)](https://github.com/project-absence/project-absence/actions)
