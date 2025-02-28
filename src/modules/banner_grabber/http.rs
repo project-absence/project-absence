@@ -6,7 +6,7 @@ use super::{Banner, BannerGrabber};
 use regex::Regex;
 use reqwest::{
     blocking::Client,
-    header::{HeaderMap, ALLOW, CONTENT_TYPE, SERVER, USER_AGENT},
+    header::{ALLOW, CONTENT_TYPE, HeaderMap, SERVER, USER_AGENT},
 };
 
 pub struct HttpBannerGrabber {
