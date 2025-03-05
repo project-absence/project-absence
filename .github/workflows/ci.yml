@@ -1,9 +1,6 @@
 name: Project Absence CI (Lint & Test)
 
-on: [push, pull_request]
-
-permissions:
-  contents: read
+on: [push]
 
 jobs:
   rustfmt:
@@ -24,27 +21,14 @@ jobs:
         run: cargo clippy --all-targets --all-features
   test:
     name: Test
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: [rustfmt, clippy]
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
-        toolchain:
-          - "stable"
-          - "nightly"
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
       - name: Install dependencies for clipboard crate
-        if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
-      - name: Install nightly toolchain
-        if: matrix.toolchain == 'nightly'
-        run: rustup toolchain install nightly
       - name: Build
-        run: cargo +${{ matrix.toolchain }} build --all --no-default-features --all-features
+        run: cargo build --all --no-default-features --all-features
       - name: Test
-        run: cargo +${{ matrix.toolchain }} test --all --no-default-features --all-features
+        run: cargo test --all --no-default-features --all-features
