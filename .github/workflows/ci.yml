@@ -1,6 +1,9 @@
 name: Project Absence CI (Lint & Test)
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   lint-test:
