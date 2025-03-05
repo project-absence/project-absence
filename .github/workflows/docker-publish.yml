@@ -6,9 +6,6 @@ on:
       - "v*"
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest

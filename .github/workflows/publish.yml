@@ -6,11 +6,8 @@ on:
       - "v*"
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
-  test:
+  publish:
     name: Publish
     runs-on: ubuntu-latest
     steps:
