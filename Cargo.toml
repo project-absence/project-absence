@@ -1,13 +1,14 @@
 [package]
 name = "project-absence"
 description = "👁️  Uncover the unseen"
-version = "0.2.0"
+version = "0.2.1"
 license = "MIT"
 readme = "README.md"
 include = [
     "/Cargo.toml",
     "/LICENSE.md",
     "/README.md",
+    "/TERMS_OF_USE.md",
     "/src/**",
 ]
 repository = "https://github.com/project-absence/project-absence"

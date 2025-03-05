@@ -7,7 +7,6 @@
 [![CI Badge](https://github.com/project-absence/project-absence/actions/workflows/ci.yml/badge.svg)](https://github.com/project-absence/project-absence/actions)
 [![Dependency Status Badge](https://deps.rs/repo/github/project-absence/project-absence/status.svg)](https://deps.rs/repo/github/project-absence/project-absence)
 
-[![Discord Server Badge](https://img.shields.io/discord/739934735387721768?logo=discord)](https://discord.gg/mTBrXyWxAF)
 [![Last Commit Badge](https://img.shields.io/github/last-commit/project-absence/project-absence)](https://github.com/project-absence/project-absence/commits/main)
 [![Conventional Commits Badge](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org/en/v1.0.0/)
 
@@ -19,7 +18,7 @@
 
 ### 👁️ Uncover the unseen
 
-Project Absence is a tool for analyzing your domains. Its features include finding open ports, discovering subdomains, discovering files and more will be coming with the time.
+Project Absence is a security auditing tool designed to assist system administrators and security researchers uncover potentially overlooked security exposures in their domains and servers. It can assist in identifying open ports, discovering subdomains, exposing unprotected files, and much more - new features will be added over time.
 
 ## Getting Started
 
@@ -108,7 +107,9 @@ If you encounter issues while using Project Absence, consider the following:
 
 ## Disclaimer
 
-This tool is designed for **legal and ethical host analysis only**. Misusing it for unauthorized access or other illegal activities is strictly prohibited. The authors and contributors are not responsible for any misuse or legal consequences arising from its use.
+This tool is designed for **lawful and ethical security analysis only**. It assists system administrators and security researchers uncover potentially overlooked security exposures in domains and servers. Unauthorized use on systems without explicit permission is strictly prohibited.
+
+By using this tool, you agree to comply with all applicable laws and abide by the [Terms of Use](https://github.com/project-absence/.github/blob/main/TERMS_OF_USE.md).
 
 ## Contributing
 
