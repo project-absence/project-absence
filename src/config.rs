@@ -58,6 +58,7 @@ pub struct Config {
     pub enumerate_subdomains: EnumerateSubdomainsConfig,
     pub passive_dns: PassiveDNSConfig,
     pub port_scanner: PortScannerConfig,
+    #[cfg(feature = "chrome")]
     pub screenshot_grabber: ScreenshotGrabberConfig,
 }
 

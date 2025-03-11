@@ -5,7 +5,7 @@ FROM rust:slim-bookworm AS builder
 COPY --from=base / /
 WORKDIR /app
 ADD . /app
-RUN cargo build --release
+RUN cargo build --release --no-default-features
 
 FROM base
 COPY --from=builder /app/target/release/project-absence /

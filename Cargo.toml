@@ -15,6 +15,8 @@ repository = "https://github.com/project-absence/project-absence"
 edition = "2024"
 
 [features]
+default = ["chrome"]
+chrome = ["dep:headless_chrome"]
 clipboard = ["dep:clipboard"]
 
 [dependencies]
@@ -22,7 +24,7 @@ base64 = "0.22.1"
 chrono = "0.4.39"
 clap = { version = "4.5.31", features = ["derive"] }
 clipboard = { version = "0.5.0", optional = true }
-headless_chrome = "1.0.16"
+headless_chrome = { version = "1.0.16", optional = true }
 human_bytes = "0.4.3"
 memory-stats = "1.2.0"
 mlua = { version = "0.10.3", features = ["lua54", "send", "vendored"] }

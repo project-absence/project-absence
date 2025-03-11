@@ -128,6 +128,7 @@ impl Session {
         {
             self.register_module(modules::port_scanner::ModulePortScanner::new());
         }
+        #[cfg(feature = "chrome")]
         if self.config.screenshot_grabber.enabled
             && modules::screenshot_grabber::ModuleScreenshotGrabber::new().noise_level()
                 <= self.args.noise_level

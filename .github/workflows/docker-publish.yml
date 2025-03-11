@@ -8,8 +8,8 @@ on:
 
 jobs:
   build-and-push:
+    name: Build and push Docker images
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
