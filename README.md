@@ -86,7 +86,7 @@ cargo build --release
 
 ### Example Usage
 
-Using the tool is straightforward. You may look at the [documentation](https://projectabsence.org/docs/) website for the config and CLI arguments that you can pass.
+Using the tool is straightforward. You may look at the [documentation](https://absence.krypton.ninja/docs/) website for the config and CLI arguments that you can pass.
 
 After editing the config as you wish, running the tool with no specific CLI arguments is as simple as doing
 
@@ -96,7 +96,7 @@ project-absence -d krypton.ninja
 
 ## Documentation
 
-Full documentation is available [here](https://projectabsence.org/docs/). It includes detailed explanations of arguments and configurations.
+Full documentation is available [here](https://absence.krypton.ninja/docs/). It includes detailed explanations of arguments and configurations.
 
 ## Troubleshooting
 
