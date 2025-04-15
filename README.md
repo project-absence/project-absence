@@ -2,6 +2,7 @@
 
 # Project Absence
 
+[![Discord Server Badge](https://img.shields.io/discord/1358456011316396295?logo=discord)](https://discord.gg/xj6y5ZaTMr)
 [![Crates.io Badge](https://img.shields.io/crates/v/project-absence.svg?color=fe7d37)](https://crates.io/crates/project-absence)
 [![Docker Badge](https://img.shields.io/docker/v/kkrypt0nn/project-absence?logo=docker)](https://hub.docker.com/r/kkrypt0nn/project-absence)
 [![CI Badge](https://github.com/project-absence/project-absence/actions/workflows/ci.yml/badge.svg)](https://github.com/project-absence/project-absence/actions)
@@ -103,6 +104,7 @@ Full documentation is available [here](https://absence.krypton.ninja/docs/). It 
 If you encounter issues while using Project Absence, consider the following:
 
 - Ensure you are running the latest version
+- Join my Discord server [here](https://discord.gg/xj6y5ZaTMr)
 - Report issues: Use the [GitHub issue tracker](https://github.com/project-absence/project-absence/issues)
 
 ## Disclaimer

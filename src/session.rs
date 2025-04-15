@@ -100,6 +100,12 @@ impl Session {
         {
             self.register_module(modules::banner_grabber::ModuleBannerGrabber::new());
         }
+        if self.config.domain_takeover.enabled
+            && modules::domain_takeover::ModuleDomainTakeover::new().noise_level()
+                <= self.args.noise_level
+        {
+            self.register_module(modules::domain_takeover::ModuleDomainTakeover::new());
+        }
         if self.config.dork.enabled
             && modules::dork::ModuleDork::new().noise_level() <= self.args.noise_level
         {

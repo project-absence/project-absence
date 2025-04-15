@@ -138,8 +138,7 @@ impl Module for ModulePassiveDNS {
                                 session.get_database().search(Type::Domain, domain.clone())
                             {
                                 let mut new_node = Node::new(Type::Domain, name_value.clone());
-                                new_node
-                                    .add_data(String::from("flags"), Value::Number(flags.into()));
+                                new_node.add_flag(flags);
                                 if let Some(ip_addr) = helpers::network::get_ip_addr(name_value) {
                                     new_node.add_data(
                                         String::from("ip"),

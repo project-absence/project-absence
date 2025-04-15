@@ -5,6 +5,7 @@ use crate::events;
 use crate::session::Session;
 
 pub mod banner_grabber;
+pub mod domain_takeover;
 pub mod dork;
 pub mod enumerate_files;
 pub mod enumerate_subdomains;

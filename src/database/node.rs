@@ -77,14 +77,23 @@ impl Node {
         self.data.insert(key, value);
     }
 
-    #[allow(dead_code)]
     pub fn get_data(&self, key: &str) -> Option<&Value> {
         self.data.get(key)
     }
 
-    #[allow(dead_code)]
     pub fn edit_data(&mut self, key: String, new_value: Value) {
         self.data.entry(key).and_modify(|e| *e = new_value);
+    }
+
+    pub fn add_flag(&mut self, flag: usize) {
+        if !self.data.contains_key("flags") {
+            self.data.insert(String::from("flags"), flags::ZERO.into());
+        }
+        let current_flags = self.get_data("flags").unwrap().as_u64().unwrap_or_default() as usize;
+        self.edit_data(
+            String::from("flags"),
+            Value::Number((current_flags | flag).into()),
+        );
     }
 
     pub fn get_or_init_map(&mut self, key: &str) -> serde_json::Map<String, Value> {
@@ -164,7 +173,7 @@ impl Node {
         let flags = if let Some(flags) = self.get_data("flags") {
             let mut result = String::from("#### Flags\n");
             result += format!(
-                "\n- `IS_RECENT` => {}\n- `HAS_EXPIRED` => {}",
+                "\n- `IS_RECENT` => {}\n- `HAS_EXPIRED` => {}\n- `POSSIBLE_TAKEOVER` => {}",
                 flags::contains_to_markdown(
                     flags.as_u64().unwrap() as usize,
                     flags::domain::IS_RECENT
@@ -172,7 +181,21 @@ impl Node {
                 flags::contains_to_markdown(
                     flags.as_u64().unwrap() as usize,
                     flags::domain::HAS_EXPIRED
-                )
+                ),
+                if flags::contains(
+                    flags.as_u64().unwrap() as usize,
+                    flags::domain::POSSIBLE_TAKEOVER
+                ) {
+                    format!(
+                        "✅ (Platform: `{}`)",
+                        self.get_data("possible_takeover")
+                            .unwrap_or(&Value::String("Not set".to_string()))
+                            .as_str()
+                            .unwrap_or_default()
+                    )
+                } else {
+                    "❌".to_string()
+                }
             )
             .as_str();
             Some(result)
