@@ -2,7 +2,7 @@ use std::{env, fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-use crate::logger;
+use crate::{logger, modules::dork};
 
 const DEFAULT_CONFIG: &str = r#"[banner_grabber]
 enabled = false
@@ -86,6 +86,8 @@ pub struct DomainTakeoverConfig {
 pub struct DorkConfig {
     /// Whether the module is enabled
     pub enabled: bool,
+    /// The search engine to use
+    pub search_engine: Option<dork::SearchEngine>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

@@ -8,6 +8,7 @@ use crate::{flags, modules::port_scanner::OpenPort};
 #[derive(Clone, Debug, PartialEq)]
 pub enum Type {
     Domain,
+    Email,
     File,
 }
 
@@ -16,6 +17,9 @@ impl fmt::Display for Type {
         match self {
             Type::Domain => {
                 write!(formatter, "domain")
+            }
+            Type::Email => {
+                write!(formatter, "email")
             }
             Type::File => {
                 write!(formatter, "file")

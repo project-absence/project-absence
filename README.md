@@ -92,7 +92,7 @@ Using the tool is straightforward. You may look at the [documentation](https://a
 After editing the config as you wish, running the tool with no specific CLI arguments is as simple as doing
 
 ```bash
-project-absence -d krypton.ninja
+project-absence -d <your-domain>
 ```
 
 ## Documentation

@@ -1,5 +1,9 @@
+use std::collections::HashMap;
+use std::fmt;
+
 use regex::Regex;
 use reqwest::header::USER_AGENT;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::database::node::{Node, Type};
@@ -9,11 +13,32 @@ use crate::{events, helpers, logger};
 
 use super::NoiseLevel;
 
-// At the moment just Google, so that's just a static string to append to the logger
-// Will add other engines later such as Yandex, Yahoo, etc.
-const MODE: &str = "google";
+#[derive(
+    Copy, Clone, Debug, Default, Deserialize, PartialEq, Eq, PartialOrd, Ord, Serialize, Hash,
+)]
+#[serde(rename_all = "lowercase")]
+pub enum SearchEngine {
+    Ecosia,
+    #[default]
+    Google,
+}
 
-pub struct ModuleDork {}
+impl fmt::Display for SearchEngine {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            SearchEngine::Ecosia => {
+                write!(formatter, "ecosia")
+            }
+            SearchEngine::Google => {
+                write!(formatter, "google")
+            }
+        }
+    }
+}
+
+pub struct ModuleDork {
+    base_urls: HashMap<SearchEngine, String>,
+}
 
 impl Default for ModuleDork {
     fn default() -> Self {
@@ -23,13 +48,103 @@ impl Default for ModuleDork {
 
 impl ModuleDork {
     pub fn new() -> Self {
-        ModuleDork {}
+        ModuleDork {
+            base_urls: HashMap::from([
+                (
+                    SearchEngine::Ecosia,
+                    String::from("https://www.ecosia.org/search?method=index&q={{QUERY}}"),
+                ),
+                (
+                    SearchEngine::Google,
+                    String::from("https://www.google.com/search?q={{QUERY}}"),
+                ),
+            ]),
+        }
+    }
+
+    fn name_with_search_engine(&self, search_engine: SearchEngine) -> String {
+        format!("{}{}", self.name(), search_engine)
+    }
+
+    fn get_domains(
+        &self,
+        session: &Session,
+        domain: String,
+        search_engine: SearchEngine,
+    ) -> Result<Vec<String>, String> {
+        let uri = self
+            .base_urls
+            .get(&search_engine)
+            .unwrap()
+            .replace("{{QUERY}}", format!("site%3A{}", domain).as_str());
+        if let Ok(response) = session
+            .get_http_client()
+            .get(uri.clone())
+            // https://github.com/benbusby/whoogle-search/issues/1211
+            .header(
+                USER_AGENT,
+                "Lynx/2.9.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/3.4.0",
+            )
+            .send()
+        {
+            let html = response.text().unwrap_or_default();
+            let re = Regex::new(&format!(
+                r#"\bhttps://([a-zA-Z0-9.-]+\.{})\b"#,
+                regex::escape(&domain)
+            ))
+            .unwrap();
+            Ok(re
+                .captures_iter(&html)
+                .filter_map(|cap| cap.get(1).map(|subdomain| subdomain.as_str().to_string()))
+                .collect::<Vec<String>>())
+        } else {
+            Err(format!("Unable to reach {}", search_engine))
+        }
+    }
+
+    fn get_emails(
+        &self,
+        session: &Session,
+        domain: String,
+        search_engine: SearchEngine,
+    ) -> Result<Vec<String>, String> {
+        let uri = self
+            .base_urls
+            .get(&search_engine)
+            .unwrap()
+            .replace("{{QUERY}}", format!("%22@{}%22", domain).as_str());
+        if let Ok(response) = session
+            .get_http_client()
+            .get(uri.clone())
+            // https://github.com/benbusby/whoogle-search/issues/1211
+            .header(
+                USER_AGENT,
+                "Lynx/2.9.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/3.4.0",
+            )
+            .send()
+        {
+            let html = response
+                .text()
+                .unwrap_or_default()
+                .replace(format!("%22@{}%22", domain).as_str(), "");
+            let re = Regex::new(&format!(
+                r#"\b([a-zA-Z0-9](?:[a-zA-Z0-9.+!%\-/]{{1,64}}|)@{})\b"#,
+                regex::escape(&domain)
+            ))
+            .unwrap();
+            Ok(re
+                .captures_iter(&html)
+                .filter_map(|cap| cap.get(1).map(|email| email.as_str().to_string()))
+                .collect::<Vec<String>>())
+        } else {
+            Err(format!("Unable to reach {}", search_engine))
+        }
     }
 }
 
 impl Module for ModuleDork {
     fn name(&self) -> String {
-        format!("dork:{}", MODE)
+        String::from("dork:")
     }
 
     fn noise_level(&self) -> NoiseLevel {
@@ -53,33 +168,17 @@ impl Module for ModuleDork {
                 return Err("Received wrong context, exiting module".to_string());
             }
         };
+        let search_engine = session.get_config().dork.search_engine.unwrap_or_default();
 
-        let uri = format!("https://www.google.com/search?q=site%3A{0}", domain);
-        if let Ok(response) = session
-            .get_http_client()
-            .get(uri.clone())
-            // https://github.com/benbusby/whoogle-search/issues/1211
-            .header(
-                USER_AGENT,
-                "Lynx/2.9.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/3.4.0",
-            )
-            .send()
-        {
-            let html = response.text().unwrap_or_default();
-            let re = Regex::new(&format!(
-                r#"href="/url\?q=https://([a-zA-Z0-9.-]+\.{})"#,
-                regex::escape(&domain)
-            ))
-            .unwrap();
-            for cap in re.captures_iter(&html) {
-                if let Some(subdomain) = cap.get(1) {
-                    let subdomain = subdomain.as_str();
+        match self.get_domains(session, domain.clone(), search_engine) {
+            Ok(domains) => {
+                for subdomain in domains {
                     if !session
                         .get_state()
                         .has_discovered_domain(subdomain.to_string())
                     {
                         logger::println(
-                            self.name(),
+                            self.name_with_search_engine(search_engine),
                             format!("Discovered '{}' as a new subdomain", subdomain),
                         );
 
@@ -87,7 +186,7 @@ impl Module for ModuleDork {
                             session.get_database().search(Type::Domain, domain.clone())
                         {
                             let mut new_node = Node::new(Type::Domain, subdomain.to_string());
-                            if let Some(ip_addr) = helpers::network::get_ip_addr(subdomain) {
+                            if let Some(ip_addr) = helpers::network::get_ip_addr(&subdomain) {
                                 new_node.add_data(
                                     String::from("ip"),
                                     Value::String(ip_addr.to_string()),
@@ -103,9 +202,30 @@ impl Module for ModuleDork {
                     }
                 }
             }
-            Ok(())
-        } else {
-            Err("Unable to reach Google".to_string())
+            Err(e) => logger::error(self.name_with_search_engine(search_engine), e),
         }
+
+        match self.get_emails(session, domain.clone(), search_engine) {
+            Ok(emails) => {
+                for email in emails {
+                    if !session.get_state().has_discovered_email(email.to_string()) {
+                        logger::println(
+                            self.name_with_search_engine(search_engine),
+                            format!("Discovered '{}' as a new email", email),
+                        );
+
+                        if let Some(parent) =
+                            session.get_database().search(Type::Domain, domain.clone())
+                        {
+                            parent.connect(Node::new(Type::Email, email.to_string()));
+                        }
+                        session.get_state().discover_email(email.to_string());
+                    }
+                }
+            }
+            Err(e) => logger::error(self.name_with_search_engine(search_engine), e),
+        }
+
+        Ok(())
     }
 }
