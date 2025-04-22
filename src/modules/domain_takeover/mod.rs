@@ -69,7 +69,9 @@ impl Module for ModuleDomainTakeover {
     }
 
     fn description(&self) -> String {
-        String::from("Checks for the content of a domain know whether it can be taken over")
+        String::from(
+            "This module checks for the content of a domain to know whether it can be taken over",
+        )
     }
 
     fn subscribers(&self) -> Vec<events::Type> {

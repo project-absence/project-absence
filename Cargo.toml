@@ -1,7 +1,7 @@
 [package]
 name = "project-absence"
 description = "👁️  Uncover the unseen"
-version = "0.3.0"
+version = "0.4.0"
 license = "MIT"
 readme = "README.md"
 include = [
@@ -22,13 +22,13 @@ clipboard = ["dep:clipboard"]
 [dependencies]
 base64 = "0.22.1"
 chrono = "0.4.40"
-clap = { version = "4.5.36", features = ["derive"] }
+clap = { version = "4.5.37", features = ["derive"] }
 clipboard = { version = "0.5.0", optional = true }
 headless_chrome = { version = "1.0.17", optional = true }
 human_bytes = "0.4.3"
 memory-stats = "1.2.0"
 mlua = { version = "0.10.3", features = ["lua54", "send", "vendored"] }
-rand = "0.9.0"
+rand = "0.9.1"
 regex = "1.11.1"
 reqwest = { version = "0.12.15", features = ["blocking", "json"] }
 serde = { version = "1.0.219", features = ["derive"] }
