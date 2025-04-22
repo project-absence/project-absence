@@ -85,7 +85,7 @@ impl Module for ModuleDomainTakeover {
         };
 
         let response = reqwest::blocking::Client::new()
-            .get(format!("http://{}", domain))
+            .get(format!("https://{}", domain))
             .header(USER_AGENT, helpers::ua::get_random())
             .send();
         match response {

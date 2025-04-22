@@ -19,6 +19,9 @@ enabled = false
 [enumerate_subdomains]
 enabled = false
 
+[enumerate_vhosts]
+enabled = false
+
 [passive_dns]
 enabled = false
 
@@ -60,6 +63,7 @@ pub struct Config {
     pub dork: DorkConfig,
     pub enumerate_files: EnumerateFilesConfig,
     pub enumerate_subdomains: EnumerateSubdomainsConfig,
+    pub enumerate_vhosts: EnumerateVhostsConfig,
     pub passive_dns: PassiveDNSConfig,
     pub port_scanner: PortScannerConfig,
     #[cfg(feature = "chrome")]
@@ -96,6 +100,14 @@ pub struct EnumerateFilesConfig {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EnumerateSubdomainsConfig {
+    /// Whether the module is enabled
+    pub enabled: bool,
+    /// The path to the wordlist to use
+    pub wordlist: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct EnumerateVhostsConfig {
     /// Whether the module is enabled
     pub enabled: bool,
     /// The path to the wordlist to use

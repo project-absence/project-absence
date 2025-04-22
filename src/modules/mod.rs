@@ -9,6 +9,7 @@ pub mod domain_takeover;
 pub mod dork;
 pub mod enumerate_files;
 pub mod enumerate_subdomains;
+pub mod enumerate_vhosts;
 pub mod lua_script;
 pub mod passive_dns;
 pub mod port_scanner;

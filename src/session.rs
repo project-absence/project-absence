@@ -123,6 +123,12 @@ impl Session {
         {
             self.register_module(modules::enumerate_subdomains::ModuleEnumerateSubdomains::new());
         }
+        if self.config.enumerate_vhosts.enabled
+            && modules::enumerate_vhosts::ModuleEnumerateVhosts::new().noise_level()
+                <= self.args.noise_level
+        {
+            self.register_module(modules::enumerate_vhosts::ModuleEnumerateVhosts::new());
+        }
         if self.config.passive_dns.enabled
             && modules::passive_dns::ModulePassiveDNS::new().noise_level() <= self.args.noise_level
         {
