@@ -58,16 +58,16 @@ pub fn create_file_if_not_existing() {
 /// The config.toml file structure
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
-    pub banner_grabber: BannerGrabberConfig,
-    pub domain_takeover: DomainTakeoverConfig,
-    pub dork: DorkConfig,
-    pub enumerate_files: EnumerateFilesConfig,
-    pub enumerate_subdomains: EnumerateSubdomainsConfig,
-    pub enumerate_vhosts: EnumerateVhostsConfig,
-    pub passive_dns: PassiveDNSConfig,
-    pub port_scanner: PortScannerConfig,
+    pub banner_grabber: Option<BannerGrabberConfig>,
+    pub domain_takeover: Option<DomainTakeoverConfig>,
+    pub dork: Option<DorkConfig>,
+    pub enumerate_files: Option<EnumerateFilesConfig>,
+    pub enumerate_subdomains: Option<EnumerateSubdomainsConfig>,
+    pub enumerate_vhosts: Option<EnumerateVhostsConfig>,
+    pub passive_dns: Option<PassiveDNSConfig>,
+    pub port_scanner: Option<PortScannerConfig>,
     #[cfg(feature = "chrome")]
-    pub screenshot_grabber: ScreenshotGrabberConfig,
+    pub screenshot_grabber: Option<ScreenshotGrabberConfig>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -98,6 +98,13 @@ pub struct EnumerateFilesConfig {
     pub wordlist: Option<String>,
     /// The extension to append to the file names
     pub files_extension: Option<String>,
+    /// The status codes to match
+    /// Examples:
+    /// * `200-299` -> All the successful responses
+    /// * `200-299,401,403` -> All the successful responses, including unauthorized and forbidden
+    ///
+    /// If this is option is not provided, it will use "200-299,301,302,307,401,403,405,500"
+    pub match_status: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -106,6 +113,13 @@ pub struct EnumerateSubdomainsConfig {
     pub enabled: bool,
     /// The path to the wordlist to use
     pub wordlist: Option<String>,
+    /// The status codes to match
+    /// Examples:
+    /// * `200-299` -> All the successful responses
+    /// * `200-299,401,403` -> All the successful responses, including unauthorized and forbidden
+    ///
+    /// If this is option is not provided, it will use "200-299,301,302,307,401,403,405,500"
+    pub match_status: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -114,6 +128,13 @@ pub struct EnumerateVhostsConfig {
     pub enabled: bool,
     /// The path to the wordlist to use
     pub wordlist: Option<String>,
+    /// The status codes to match
+    /// Examples:
+    /// * `200-299` -> All the successful responses
+    /// * `200-299,401,403` -> All the successful responses, including unauthorized and forbidden
+    ///
+    /// If this is option is not provided, it will use "200-299,301,302,307,401,403,405,500"
+    pub match_status: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

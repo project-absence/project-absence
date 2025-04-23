@@ -7,8 +7,8 @@ pub enum Type {
     /// String: the discovered domain
     DiscoveredDomain(String),
     /// String: the domain
-    /// u16: the port that is open
-    OpenPort(String, u16),
+    /// usize: the port that is open
+    OpenPort(String, usize),
 }
 
 impl fmt::Display for Type {

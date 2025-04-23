@@ -12,6 +12,7 @@ use headless_chrome::browser;
 use headless_chrome::protocol::cdp::Page;
 use serde_json::Value;
 
+use crate::config;
 use crate::database::node::Type;
 use crate::events;
 use crate::logger;
@@ -20,27 +21,23 @@ use crate::session::Session;
 
 use super::NoiseLevel;
 
-pub struct ModuleScreenshotGrabber {}
-
-impl Default for ModuleScreenshotGrabber {
-    fn default() -> Self {
-        Self::new()
-    }
+pub struct ModuleScreenshotGrabber {
+    config: config::ScreenshotGrabberConfig,
 }
 
 impl ModuleScreenshotGrabber {
-    pub fn new() -> Self {
-        ModuleScreenshotGrabber {}
+    pub fn new(config: config::ScreenshotGrabberConfig) -> Self {
+        ModuleScreenshotGrabber { config }
+    }
+
+    pub fn noise_level() -> NoiseLevel {
+        NoiseLevel::Low
     }
 }
 
 impl Module for ModuleScreenshotGrabber {
     fn name(&self) -> String {
         String::from("grabber:screenshot")
-    }
-
-    fn noise_level(&self) -> NoiseLevel {
-        NoiseLevel::Low
     }
 
     fn description(&self) -> String {
@@ -59,12 +56,11 @@ impl Module for ModuleScreenshotGrabber {
             }
         };
 
-        let chrome_path =
-            if let Some(chrome_path) = &session.get_config().screenshot_grabber.chrome_path {
-                Some(PathBuf::from(chrome_path))
-            } else {
-                browser::default_executable().ok()
-            };
+        let chrome_path = if let Some(chrome_path) = &self.config.chrome_path {
+            Some(PathBuf::from(chrome_path))
+        } else {
+            browser::default_executable().ok()
+        };
 
         let browser = Browser::new(
             LaunchOptions::default_builder()
@@ -83,15 +79,10 @@ impl Module for ModuleScreenshotGrabber {
             .capture_screenshot(Page::CaptureScreenshotFormatOption::Png)
             .map_err(|e| e.to_string())?;
 
-        let save_data = if session
-            .get_config()
-            .screenshot_grabber
-            .save_as_file
-            .is_some()
-        {
+        let save_data = if self.config.save_as_file.is_some_and(|value| value) {
             let home_dir = env::var("HOME")
                 .or_else(|_| env::var("USERPROFILE"))
-                .unwrap_or_else(|_| String::from(""));
+                .unwrap_or(String::from(""));
             let result_path = &session.get_args().output;
             let expanded_result_path = if result_path.starts_with("~") {
                 let mut expanded_path = result_path.clone();

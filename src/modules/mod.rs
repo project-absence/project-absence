@@ -19,7 +19,7 @@ pub mod screenshot_grabber;
 
 pub enum Context {
     Domain(String),
-    OpenPort(String, u16),
+    OpenPort(String, usize),
     None,
 }
 
@@ -46,7 +46,6 @@ pub trait Module: Send + Sync {
     fn name(&self) -> String;
     #[allow(dead_code)]
     fn description(&self) -> String;
-    fn noise_level(&self) -> NoiseLevel;
     fn subscribers(&self) -> Vec<events::Type>;
     fn execute(&self, session: &Session, context: Context) -> Result<(), String>;
 }

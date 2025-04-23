@@ -9,7 +9,7 @@ use serde_json::Value;
 use crate::database::node::{Node, Type};
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, helpers, logger};
+use crate::{config, events, helpers, logger};
 
 use super::NoiseLevel;
 
@@ -38,16 +38,11 @@ impl fmt::Display for SearchEngine {
 
 pub struct ModuleDork {
     base_urls: HashMap<SearchEngine, String>,
-}
-
-impl Default for ModuleDork {
-    fn default() -> Self {
-        Self::new()
-    }
+    config: config::DorkConfig,
 }
 
 impl ModuleDork {
-    pub fn new() -> Self {
+    pub fn new(config: config::DorkConfig) -> Self {
         ModuleDork {
             base_urls: HashMap::from([
                 (
@@ -59,7 +54,12 @@ impl ModuleDork {
                     String::from("https://www.google.com/search?q={{QUERY}}"),
                 ),
             ]),
+            config,
         }
+    }
+
+    pub fn noise_level() -> NoiseLevel {
+        NoiseLevel::None
     }
 
     fn name_with_search_engine(&self, search_engine: SearchEngine) -> String {
@@ -147,10 +147,6 @@ impl Module for ModuleDork {
         String::from("dork:")
     }
 
-    fn noise_level(&self) -> NoiseLevel {
-        NoiseLevel::None
-    }
-
     fn description(&self) -> String {
         String::from(
             "Uses search operators and terms on search engines to try gather more information",
@@ -168,7 +164,7 @@ impl Module for ModuleDork {
                 return Err("Received wrong context, exiting module".to_string());
             }
         };
-        let search_engine = session.get_config().dork.search_engine.unwrap_or_default();
+        let search_engine = self.config.search_engine.unwrap_or_default();
 
         match self.get_domains(session, domain.clone(), search_engine) {
             Ok(domains) => {

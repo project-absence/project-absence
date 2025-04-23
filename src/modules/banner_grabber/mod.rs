@@ -31,25 +31,19 @@ impl Banner {
 
 pub struct ModuleBannerGrabber {}
 
-impl Default for ModuleBannerGrabber {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl ModuleBannerGrabber {
     pub fn new() -> Self {
         ModuleBannerGrabber {}
+    }
+
+    pub fn noise_level() -> NoiseLevel {
+        NoiseLevel::Medium
     }
 }
 
 impl Module for ModuleBannerGrabber {
     fn name(&self) -> String {
         String::from("grabber:banner")
-    }
-
-    fn noise_level(&self) -> NoiseLevel {
-        NoiseLevel::Medium
     }
 
     fn description(&self) -> String {

@@ -40,14 +40,8 @@ impl ModuleLuaScript {
             .map_err(|e| e.to_string())?;
         Ok(())
     }
-}
 
-impl Module for ModuleLuaScript {
-    fn name(&self) -> String {
-        String::from("lua:script")
-    }
-
-    fn noise_level(&self) -> NoiseLevel {
+    pub fn noise_level(&self) -> NoiseLevel {
         match self.module.get::<Function>("noise_level") {
             Ok(level) => match level.call::<String>("").unwrap().as_str() {
                 "None" => NoiseLevel::None,
@@ -57,6 +51,12 @@ impl Module for ModuleLuaScript {
             },
             _ => NoiseLevel::default(),
         }
+    }
+}
+
+impl Module for ModuleLuaScript {
+    fn name(&self) -> String {
+        String::from("lua:script")
     }
 
     fn description(&self) -> String {

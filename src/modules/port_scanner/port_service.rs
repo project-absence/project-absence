@@ -6,8 +6,8 @@ use std::{collections::HashMap, sync::LazyLock};
 ///
 /// More ports and services will be added over time
 /// The ports like 5000, 7777 or 8000 are explicitly ignored, because there is like 4+ services that can be running behind it.
-static SERVICE_FOR_TCP_PORT: LazyLock<HashMap<u16, String>> = LazyLock::new(|| {
-    let mut map = HashMap::<u16, String>::new();
+static SERVICE_FOR_TCP_PORT: LazyLock<HashMap<usize, String>> = LazyLock::new(|| {
+    let mut map = HashMap::<usize, String>::new();
     map.insert(21, "ftp".to_string());
     map.insert(22, "ssh".to_string());
     map.insert(23, "telnet".to_string());
@@ -55,7 +55,7 @@ static SERVICE_FOR_TCP_PORT: LazyLock<HashMap<u16, String>> = LazyLock::new(|| {
     map
 });
 
-pub fn get_service_for_tcp_port(port: u16) -> String {
+pub fn get_service_for_tcp_port(port: usize) -> String {
     match SERVICE_FOR_TCP_PORT.get(&port) {
         Some(service) => service.to_string(),
         None => "unknown".to_string(),

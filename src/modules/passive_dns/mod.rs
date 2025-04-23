@@ -8,27 +8,27 @@ use crate::database::node::{Node, Type};
 use crate::modules::passive_dns::crt_sh::CrtShItem;
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, flags, helpers, logger};
+use crate::{config, events, flags, helpers, logger};
 
 use super::NoiseLevel;
 
 mod crt_sh;
 
 pub struct ModulePassiveDNS {
+    config: config::PassiveDNSConfig,
     processed_domains: Mutex<Vec<String>>,
 }
 
-impl Default for ModulePassiveDNS {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl ModulePassiveDNS {
-    pub fn new() -> Self {
+    pub fn new(config: config::PassiveDNSConfig) -> Self {
         ModulePassiveDNS {
+            config,
             processed_domains: Mutex::new(Vec::new()),
         }
+    }
+
+    pub fn noise_level() -> NoiseLevel {
+        NoiseLevel::Low
     }
 
     pub fn process(&self, domain: String) {
@@ -49,10 +49,6 @@ impl Module for ModulePassiveDNS {
         String::from("This module will perform a passive discovery of new domains by using crt.sh")
     }
 
-    fn noise_level(&self) -> NoiseLevel {
-        NoiseLevel::Low
-    }
-
     fn subscribers(&self) -> Vec<events::Type> {
         vec![events::Type::DiscoveredDomain(String::new())]
     }
@@ -64,9 +60,9 @@ impl Module for ModulePassiveDNS {
                 return Err("Received wrong context, exiting module".to_string());
             }
         };
-        let config = session.get_config();
-        let ignore_expired = config.passive_dns.ignore_expired.unwrap_or(false);
-        let recent_only = config.passive_dns.recent_only.unwrap_or(false);
+
+        let ignore_expired = self.config.ignore_expired.unwrap_or(false);
+        let recent_only = self.config.recent_only.unwrap_or(false);
         if self.has_processed(domain.to_string()) {
             return Ok(());
         }

@@ -10,7 +10,7 @@ use serde_json::Value;
 use crate::database::node::{Node, Type};
 use crate::modules::{Context, Module};
 use crate::session::Session;
-use crate::{events, helpers, logger};
+use crate::{config, events, helpers, logger};
 
 use super::NoiseLevel;
 
@@ -18,12 +18,12 @@ mod port_service;
 
 #[derive(Deserialize, Serialize)]
 pub struct OpenPort {
-    pub port: u16,
+    pub port: usize,
     pub potential_service: String,
 }
 
 impl OpenPort {
-    pub fn new(port: u16) -> Self {
+    pub fn new(port: usize) -> Self {
         let potential_service = get_service_for_tcp_port(port);
         OpenPort {
             port,
@@ -45,17 +45,12 @@ impl From<OpenPort> for serde_json::Value {
 }
 
 pub struct ModulePortScanner {
-    common_ports: Vec<u16>,
-}
-
-impl Default for ModulePortScanner {
-    fn default() -> Self {
-        Self::new()
-    }
+    common_ports: Vec<usize>,
+    config: config::PortScannerConfig,
 }
 
 impl ModulePortScanner {
-    pub fn new() -> Self {
+    pub fn new(config: config::PortScannerConfig) -> Self {
         ModulePortScanner {
             common_ports: Vec::from([
                 1, 3, 4, 6, 7, 9, 13, 17, 19, 20, 21, 22, 23, 24, 25, 26, 30, 32, 33, 37, 42, 43,
@@ -131,26 +126,12 @@ impl ModulePortScanner {
                 54328, 55055, 55056, 55555, 55600, 56737, 56738, 57294, 57797, 58080, 60020, 60443,
                 61532, 61900, 62078, 63331, 64623, 64680, 65000, 65129, 65389,
             ]),
+            config,
         }
     }
 
-    fn parse_range(&self, config_range: &str) -> Vec<u16> {
-        let mut ports = Vec::new();
-        for range in config_range.split(",").collect::<Vec<&str>>() {
-            let parts = range.split("-").collect::<Vec<&str>>();
-            // Should basically always be 2 for a range of ports or 1 (default branch) for a single port
-            match parts.len() {
-                2 => {
-                    let start: u16 = parts[0].parse().unwrap();
-                    let end: u16 = parts[1].parse().unwrap();
-                    (start..=end).for_each(|port| ports.push(port));
-                }
-                _ => {
-                    ports.push(parts[0].parse::<u16>().unwrap());
-                }
-            };
-        }
-        ports
+    pub fn noise_level() -> NoiseLevel {
+        NoiseLevel::High
     }
 }
 
@@ -161,10 +142,6 @@ impl Module for ModulePortScanner {
 
     fn description(&self) -> String {
         String::from("This module will check if the most common ports are open")
-    }
-
-    fn noise_level(&self) -> NoiseLevel {
-        NoiseLevel::High
     }
 
     fn subscribers(&self) -> Vec<events::Type> {
@@ -179,8 +156,8 @@ impl Module for ModulePortScanner {
             }
         };
 
-        let ports = if let Some(ports_range) = &session.get_config().port_scanner.range {
-            self.parse_range(ports_range)
+        let ports = if let Some(ports_range) = &self.config.range {
+            helpers::parsing::parse_range(ports_range)
         } else {
             self.common_ports.clone()
         };
@@ -197,9 +174,9 @@ impl Module for ModulePortScanner {
 
         match ip_addr {
             Some(ip_addr) => {
-                let (tx, rx) = mpsc::sync_channel::<u16>(10);
+                let (tx, rx) = mpsc::sync_channel::<usize>(10);
                 let threads = 20;
-                let chunks: Vec<Vec<u16>> = ports
+                let chunks: Vec<Vec<usize>> = ports
                     .chunks(ports.len().div_ceil(threads))
                     .map(|chunk| chunk.to_vec())
                     .collect();

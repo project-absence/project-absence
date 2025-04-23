@@ -56,10 +56,6 @@ impl Session {
         &self.args
     }
 
-    pub fn get_config(&self) -> &config::Config {
-        &self.config
-    }
-
     pub fn get_database(&self) -> MutexGuard<database::Database> {
         self.database.lock().unwrap()
     }
@@ -81,6 +77,7 @@ impl Session {
     }
 
     // TODO: This deserves some cleanup
+    // TODO: Include in the cleanup a way to prevent always having to do `config.clone()`, while also retaining a clean use of the config in the modules
     pub fn register_config_modules(&self) {
         self.register_module(modules::ready::ModuleReady::new());
 
@@ -94,58 +91,83 @@ impl Session {
             }
         }
 
-        if self.config.banner_grabber.enabled
-            && modules::banner_grabber::ModuleBannerGrabber::new().noise_level()
-                <= self.args.noise_level
-        {
-            self.register_module(modules::banner_grabber::ModuleBannerGrabber::new());
+        if let Some(config) = &self.config.banner_grabber {
+            if config.enabled
+                && modules::banner_grabber::ModuleBannerGrabber::noise_level()
+                    <= self.args.noise_level
+            {
+                self.register_module(modules::banner_grabber::ModuleBannerGrabber::new());
+            }
         }
-        if self.config.domain_takeover.enabled
-            && modules::domain_takeover::ModuleDomainTakeover::new().noise_level()
-                <= self.args.noise_level
-        {
-            self.register_module(modules::domain_takeover::ModuleDomainTakeover::new());
+        if let Some(config) = &self.config.domain_takeover {
+            if config.enabled
+                && modules::domain_takeover::ModuleDomainTakeover::noise_level()
+                    <= self.args.noise_level
+            {
+                self.register_module(modules::domain_takeover::ModuleDomainTakeover::new());
+            }
         }
-        if self.config.dork.enabled
-            && modules::dork::ModuleDork::new().noise_level() <= self.args.noise_level
-        {
-            self.register_module(modules::dork::ModuleDork::new());
+        if let Some(config) = &self.config.dork {
+            if config.enabled && modules::dork::ModuleDork::noise_level() <= self.args.noise_level {
+                self.register_module(modules::dork::ModuleDork::new(config.clone()));
+            }
         }
-        if self.config.enumerate_files.enabled
-            && modules::enumerate_files::ModuleEnumerateFiles::new().noise_level()
-                <= self.args.noise_level
-        {
-            self.register_module(modules::enumerate_files::ModuleEnumerateFiles::new());
+        if let Some(config) = &self.config.enumerate_files {
+            if config.enabled
+                && modules::enumerate_files::ModuleEnumerateFiles::noise_level()
+                    <= self.args.noise_level
+            {
+                self.register_module(modules::enumerate_files::ModuleEnumerateFiles::new(
+                    config.clone(),
+                ));
+            }
         }
-        if self.config.enumerate_subdomains.enabled
-            && modules::enumerate_subdomains::ModuleEnumerateSubdomains::new().noise_level()
-                <= self.args.noise_level
-        {
-            self.register_module(modules::enumerate_subdomains::ModuleEnumerateSubdomains::new());
+        if let Some(config) = &self.config.enumerate_subdomains {
+            if config.enabled
+                && modules::enumerate_subdomains::ModuleEnumerateSubdomains::noise_level()
+                    <= self.args.noise_level
+            {
+                self.register_module(
+                    modules::enumerate_subdomains::ModuleEnumerateSubdomains::new(config.clone()),
+                );
+            }
         }
-        if self.config.enumerate_vhosts.enabled
-            && modules::enumerate_vhosts::ModuleEnumerateVhosts::new().noise_level()
-                <= self.args.noise_level
-        {
-            self.register_module(modules::enumerate_vhosts::ModuleEnumerateVhosts::new());
+        if let Some(config) = &self.config.enumerate_vhosts {
+            if config.enabled
+                && modules::enumerate_vhosts::ModuleEnumerateVhosts::noise_level()
+                    <= self.args.noise_level
+            {
+                self.register_module(modules::enumerate_vhosts::ModuleEnumerateVhosts::new(
+                    config.clone(),
+                ));
+            }
         }
-        if self.config.passive_dns.enabled
-            && modules::passive_dns::ModulePassiveDNS::new().noise_level() <= self.args.noise_level
-        {
-            self.register_module(modules::passive_dns::ModulePassiveDNS::new());
+        if let Some(config) = &self.config.passive_dns {
+            if config.enabled
+                && modules::passive_dns::ModulePassiveDNS::noise_level() <= self.args.noise_level
+            {
+                self.register_module(modules::passive_dns::ModulePassiveDNS::new(config.clone()));
+            }
         }
-        if self.config.port_scanner.enabled
-            && modules::port_scanner::ModulePortScanner::new().noise_level()
-                <= self.args.noise_level
-        {
-            self.register_module(modules::port_scanner::ModulePortScanner::new());
+        if let Some(config) = &self.config.port_scanner {
+            if config.enabled
+                && modules::port_scanner::ModulePortScanner::noise_level() <= self.args.noise_level
+            {
+                self.register_module(modules::port_scanner::ModulePortScanner::new(
+                    config.clone(),
+                ));
+            }
         }
         #[cfg(feature = "chrome")]
-        if self.config.screenshot_grabber.enabled
-            && modules::screenshot_grabber::ModuleScreenshotGrabber::new().noise_level()
-                <= self.args.noise_level
-        {
-            self.register_module(modules::screenshot_grabber::ModuleScreenshotGrabber::new());
+        if let Some(config) = &self.config.screenshot_grabber {
+            if config.enabled
+                && modules::screenshot_grabber::ModuleScreenshotGrabber::noise_level()
+                    <= self.args.noise_level
+            {
+                self.register_module(modules::screenshot_grabber::ModuleScreenshotGrabber::new(
+                    config.clone(),
+                ));
+            }
         }
     }
 

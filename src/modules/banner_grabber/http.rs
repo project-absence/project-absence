@@ -11,12 +11,12 @@ use reqwest::{
 
 pub struct HttpBannerGrabber {
     domain: String,
-    port: u16,
+    port: usize,
     protocol: String,
 }
 
 impl HttpBannerGrabber {
-    pub fn new(domain: String, port: u16) -> Self {
+    pub fn new(domain: String, port: usize) -> Self {
         let protocol = match port {
             80 => String::from("http"),
             443 => String::from("https"),

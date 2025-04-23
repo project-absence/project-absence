@@ -13,12 +13,6 @@ pub struct ModuleDomainTakeover {
     platforms: HashMap<String, String>,
 }
 
-impl Default for ModuleDomainTakeover {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl ModuleDomainTakeover {
     pub fn new() -> Self {
         ModuleDomainTakeover {
@@ -54,6 +48,10 @@ impl ModuleDomainTakeover {
         }
     }
 
+    pub fn noise_level() -> NoiseLevel {
+        NoiseLevel::Low
+    }
+
     fn name_with_platform(&self, platform: String) -> String {
         format!("{}({})", self.name(), platform)
     }
@@ -62,10 +60,6 @@ impl ModuleDomainTakeover {
 impl Module for ModuleDomainTakeover {
     fn name(&self) -> String {
         String::from("domain:takeover")
-    }
-
-    fn noise_level(&self) -> NoiseLevel {
-        NoiseLevel::Low
     }
 
     fn description(&self) -> String {
