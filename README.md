@@ -15,7 +15,8 @@
 
 ---
 
-> **Warning** This is a WIP tool that is **very unstable** and **not fully optimised**, use at your own care! This README will also be reworked.
+> [!CAUTION]
+> This is a WIP tool that is **very unstable** and **not fully optimised**, use at your own care! This README will also be reworked.
 
 ### 👁️ Uncover the unseen
 
