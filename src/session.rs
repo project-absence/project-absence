@@ -86,88 +86,23 @@ impl Session {
         if let Some(script) = &self.args.script {
             let lua_module = modules::lua_script::ModuleLuaScript::new(script)
                 .expect("Failed to load Lua module");
-            if lua_module.noise_level() <= self.args.noise_level {
-                self.register_module(lua_module);
-            }
+            self.register_module(lua_module);
         }
 
-        if let Some(config) = &self.config.banner_grabber {
-            if config.enabled
-                && modules::banner_grabber::ModuleBannerGrabber::noise_level()
-                    <= self.args.noise_level
-            {
-                self.register_module(modules::banner_grabber::ModuleBannerGrabber::new());
-            }
-        }
-        if let Some(config) = &self.config.domain_takeover {
-            if config.enabled
-                && modules::domain_takeover::ModuleDomainTakeover::noise_level()
-                    <= self.args.noise_level
-            {
-                self.register_module(modules::domain_takeover::ModuleDomainTakeover::new());
-            }
+        if self.config.domain_takeover.is_some() {
+            self.register_module(modules::domain_takeover::ModuleDomainTakeover::new());
         }
         if let Some(config) = &self.config.dork {
-            if config.enabled && modules::dork::ModuleDork::noise_level() <= self.args.noise_level {
-                self.register_module(modules::dork::ModuleDork::new(config.clone()));
-            }
-        }
-        if let Some(config) = &self.config.enumerate_files {
-            if config.enabled
-                && modules::enumerate_files::ModuleEnumerateFiles::noise_level()
-                    <= self.args.noise_level
-            {
-                self.register_module(modules::enumerate_files::ModuleEnumerateFiles::new(
-                    config.clone(),
-                ));
-            }
-        }
-        if let Some(config) = &self.config.enumerate_subdomains {
-            if config.enabled
-                && modules::enumerate_subdomains::ModuleEnumerateSubdomains::noise_level()
-                    <= self.args.noise_level
-            {
-                self.register_module(
-                    modules::enumerate_subdomains::ModuleEnumerateSubdomains::new(config.clone()),
-                );
-            }
-        }
-        if let Some(config) = &self.config.enumerate_vhosts {
-            if config.enabled
-                && modules::enumerate_vhosts::ModuleEnumerateVhosts::noise_level()
-                    <= self.args.noise_level
-            {
-                self.register_module(modules::enumerate_vhosts::ModuleEnumerateVhosts::new(
-                    config.clone(),
-                ));
-            }
+            self.register_module(modules::dork::ModuleDork::new(config.clone()));
         }
         if let Some(config) = &self.config.passive_dns {
-            if config.enabled
-                && modules::passive_dns::ModulePassiveDNS::noise_level() <= self.args.noise_level
-            {
-                self.register_module(modules::passive_dns::ModulePassiveDNS::new(config.clone()));
-            }
-        }
-        if let Some(config) = &self.config.port_scanner {
-            if config.enabled
-                && modules::port_scanner::ModulePortScanner::noise_level() <= self.args.noise_level
-            {
-                self.register_module(modules::port_scanner::ModulePortScanner::new(
-                    config.clone(),
-                ));
-            }
+            self.register_module(modules::passive_dns::ModulePassiveDNS::new(config.clone()));
         }
         #[cfg(feature = "chrome")]
         if let Some(config) = &self.config.screenshot_grabber {
-            if config.enabled
-                && modules::screenshot_grabber::ModuleScreenshotGrabber::noise_level()
-                    <= self.args.noise_level
-            {
-                self.register_module(modules::screenshot_grabber::ModuleScreenshotGrabber::new(
-                    config.clone(),
-                ));
-            }
+            self.register_module(modules::screenshot_grabber::ModuleScreenshotGrabber::new(
+                config.clone(),
+            ));
         }
     }
 

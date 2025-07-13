@@ -6,8 +6,6 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{events, logger};
 
-use super::NoiseLevel;
-
 pub struct ModuleLuaScript {
     lua: mlua::Lua,
     module: mlua::Table,
@@ -39,18 +37,6 @@ impl ModuleLuaScript {
             )
             .map_err(|e| e.to_string())?;
         Ok(())
-    }
-
-    pub fn noise_level(&self) -> NoiseLevel {
-        match self.module.get::<Function>("noise_level") {
-            Ok(level) => match level.call::<String>("").unwrap().as_str() {
-                "None" => NoiseLevel::None,
-                "Low" => NoiseLevel::Low,
-                "High" => NoiseLevel::High,
-                _ => NoiseLevel::default(), // Medium
-            },
-            _ => NoiseLevel::default(),
-        }
     }
 }
 

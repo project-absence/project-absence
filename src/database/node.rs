@@ -3,13 +3,12 @@ use std::{collections::HashMap, fmt};
 use serde::{Serialize, Serializer};
 use serde_json::Value;
 
-use crate::{flags, modules::port_scanner::OpenPort};
+use crate::flags;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Type {
     Domain,
     Email,
-    File,
 }
 
 impl fmt::Display for Type {
@@ -20,9 +19,6 @@ impl fmt::Display for Type {
             }
             Type::Email => {
                 write!(formatter, "email")
-            }
-            Type::File => {
-                write!(formatter, "file")
             }
         }
     }
@@ -100,6 +96,7 @@ impl Node {
         );
     }
 
+    #[allow(dead_code)]
     pub fn get_or_init_map(&mut self, key: &str) -> serde_json::Map<String, Value> {
         if !self.data.contains_key(key) {
             self.data
@@ -206,21 +203,6 @@ impl Node {
         } else {
             None
         };
-        let open_ports = if let Some(ports) = self.get_data("ports") {
-            let mut result = String::from("#### Open Ports\n");
-            let arr = ports.as_array().unwrap();
-            for port in arr {
-                let open_port: OpenPort = serde_json::from_value(port.clone()).unwrap();
-                result += format!(
-                    "\n- **{}:** {}",
-                    open_port.port, open_port.potential_service
-                )
-                .as_str();
-            }
-            Some(result)
-        } else {
-            None
-        };
 
         let connections_markdown: String = self
             .get_connections()
@@ -238,9 +220,6 @@ impl Node {
         }
         if let Some(flags) = flags {
             sections.push(flags);
-        }
-        if let Some(open_ports) = open_ports {
-            sections.push(open_ports);
         }
         if !connections_markdown.is_empty() {
             sections.push(connections_markdown);

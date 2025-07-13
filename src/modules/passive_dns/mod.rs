@@ -10,8 +10,6 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{config, events, flags, helpers, logger};
 
-use super::NoiseLevel;
-
 mod crt_sh;
 
 pub struct ModulePassiveDNS {
@@ -25,10 +23,6 @@ impl ModulePassiveDNS {
             config,
             processed_domains: Mutex::new(Vec::new()),
         }
-    }
-
-    pub fn noise_level() -> NoiseLevel {
-        NoiseLevel::Low
     }
 
     pub fn process(&self, domain: String) {

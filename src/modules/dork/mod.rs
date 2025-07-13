@@ -11,8 +11,6 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{config, events, helpers, logger};
 
-use super::NoiseLevel;
-
 #[derive(
     Copy, Clone, Debug, Default, Deserialize, PartialEq, Eq, PartialOrd, Ord, Serialize, Hash,
 )]
@@ -56,10 +54,6 @@ impl ModuleDork {
             ]),
             config,
         }
-    }
-
-    pub fn noise_level() -> NoiseLevel {
-        NoiseLevel::None
     }
 
     fn name_with_search_engine(&self, search_engine: SearchEngine) -> String {

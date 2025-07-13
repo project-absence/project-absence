@@ -20,7 +20,11 @@
 
 ### 👁️ Uncover the unseen
 
-Project Absence is a security auditing tool designed to assist system administrators and security researchers uncover potentially overlooked security exposures in their domains and servers. It can assist in identifying open ports, discovering subdomains, exposing unprotected files, and much more - new features will be added over time.
+Project Absence is a domain and server OSINT tool for system administrators and security engineers. It currently supports subdomain discovery and detection of potential domain takeover opportunities on common hosting platforms.
+
+To maintain an OSINT-only approach, the tool contacts each discovered domain or server only once, to capture a screenshot and extract information based on the returned content - valuable data that can help and lead to further discoveries.
+
+More features are in development.
 
 ## Getting Started
 
@@ -110,7 +114,7 @@ If you encounter issues while using Project Absence, consider the following:
 
 ## Disclaimer
 
-This tool is designed for **lawful and ethical security analysis only**. It assists system administrators and security researchers uncover potentially overlooked security exposures in domains and servers. Unauthorized use on systems without explicit permission is strictly prohibited.
+Use responsibly and lawfully. Project Absence is meant to help system administrators and security engineers find overlooked subdomains and possible takeover risks in their own infrastructure. Do not use it against systems you do not own or explicitly have permission to test.
 
 By using this tool, you agree to comply with all applicable laws and abide by the [Terms of Use](https://github.com/project-absence/.github/blob/main/TERMS_OF_USE.md).
 

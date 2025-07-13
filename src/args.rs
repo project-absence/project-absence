@@ -3,7 +3,7 @@ use std::{env, fs, path::PathBuf};
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 
-use crate::{config::Config, modules::NoiseLevel};
+use crate::config::Config;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default, Parser)]
 #[clap(
@@ -32,10 +32,6 @@ pub struct Args {
     /// Path to configuration file
     #[arg(short = 'c', long, default_value = "~/.absence/config.toml")]
     pub config: String,
-
-    /// The maximum noise level to be used
-    #[arg(value_enum, short = 'n', long, default_value_t = NoiseLevel::Medium)]
-    pub noise_level: NoiseLevel,
 
     /// The path of where the output will be saved to
     #[arg(short = 'o', long, default_value = "~/.absence")]

@@ -19,8 +19,6 @@ use crate::logger;
 use crate::modules::{Context, Module};
 use crate::session::Session;
 
-use super::NoiseLevel;
-
 pub struct ModuleScreenshotGrabber {
     config: config::ScreenshotGrabberConfig,
 }
@@ -28,10 +26,6 @@ pub struct ModuleScreenshotGrabber {
 impl ModuleScreenshotGrabber {
     pub fn new(config: config::ScreenshotGrabberConfig) -> Self {
         ModuleScreenshotGrabber { config }
-    }
-
-    pub fn noise_level() -> NoiseLevel {
-        NoiseLevel::Low
     }
 }
 

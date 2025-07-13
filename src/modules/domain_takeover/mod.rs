@@ -7,8 +7,6 @@ use crate::modules::{Context, Module};
 use crate::session::Session;
 use crate::{events, flags, helpers, logger};
 
-use super::NoiseLevel;
-
 pub struct ModuleDomainTakeover {
     platforms: HashMap<String, String>,
 }
@@ -46,10 +44,6 @@ impl ModuleDomainTakeover {
                 ),
             ]),
         }
-    }
-
-    pub fn noise_level() -> NoiseLevel {
-        NoiseLevel::Low
     }
 
     fn name_with_platform(&self, platform: String) -> String {
