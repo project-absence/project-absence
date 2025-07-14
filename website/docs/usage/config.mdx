@@ -1,0 +1,24 @@
+---
+title: Config
+description: The config file is the file that is used to configure each module individually.
+---
+
+The config file is the file that is used to configure each module individually. Its **default path** is `~/.absence/config.toml` and has the following **default content**:
+
+```toml title="~/.absence/config.toml"
+[domain_takeover]
+enabled = false
+
+[dork]
+enabled = false
+
+[passive_dns]
+enabled = false
+
+[screenshot_grabber]
+enabled = false
+```
+
+Every module can be `enabled` by setting its value to `true`. Some modules have settings that can be set specifically for that module only; see the page of the modules to know what can be set.
+
+Any non-needed module can just be removed from the config file as well.
