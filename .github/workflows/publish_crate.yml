@@ -1,4 +1,4 @@
-name: Project Absence CD (Publish)
+name: Project Absence CD (Publish Crate)
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish:
-    name: Publish
+  publish_crate:
+    name: Publish Crate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code

@@ -5,10 +5,10 @@
 [![Discord Server Badge](https://img.shields.io/discord/1358456011316396295?logo=discord)](https://discord.gg/xj6y5ZaTMr)
 [![Crates.io Badge](https://img.shields.io/crates/v/project-absence.svg?color=fe7d37)](https://crates.io/crates/project-absence)
 [![Docker Badge](https://img.shields.io/docker/v/kkrypt0nn/project-absence?logo=docker)](https://hub.docker.com/r/kkrypt0nn/project-absence)
-[![CI Badge](https://github.com/project-absence/project-absence/actions/workflows/ci.yml/badge.svg)](https://github.com/project-absence/project-absence/actions)
-[![Dependency Status Badge](https://deps.rs/repo/github/project-absence/project-absence/status.svg)](https://deps.rs/repo/github/project-absence/project-absence)
+[![CI Badge](https://github.com/kkrypt0nn/project-absence/actions/workflows/ci.yml/badge.svg)](https://github.com/kkrypt0nn/project-absence/actions)
+[![Dependency Status Badge](https://deps.rs/repo/github/kkrypt0nn/project-absence/status.svg)](https://deps.rs/repo/github/kkrypt0nn/project-absence)
 
-[![Last Commit Badge](https://img.shields.io/github/last-commit/project-absence/project-absence)](https://github.com/project-absence/project-absence/commits/main)
+[![Last Commit Badge](https://img.shields.io/github/last-commit/kkrypt0nn/project-absence)](https://github.com/kkrypt0nn/project-absence/commits/main)
 [![Conventional Commits Badge](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org/en/v1.0.0/)
 
 </div>
@@ -110,7 +110,7 @@ If you encounter issues while using Project Absence, consider the following:
 
 - Ensure you are running the latest version
 - Join my Discord server [here](https://discord.gg/xj6y5ZaTMr)
-- Report issues: Use the [GitHub issue tracker](https://github.com/project-absence/project-absence/issues)
+- Report issues: Use the [GitHub issue tracker](https://github.com/kkrypt0nn/project-absence/issues)
 
 ## Disclaimer
 
