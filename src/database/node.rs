@@ -144,33 +144,6 @@ impl Node {
     }
 
     pub fn to_markdown(&self) -> String {
-        let screenshot = if let Some(screenshot) = self.get_data("screenshot") {
-            if screenshot.as_str().unwrap().ends_with(".png") {
-                Some(format!(
-                    "![Screenshot of '{}']({})",
-                    self.value,
-                    screenshot.as_str().unwrap()
-                ))
-            } else {
-                None
-            }
-        } else {
-            None
-        };
-        let banners = if let Some(banners) = self.get_data("banners") {
-            let mut result = String::from("#### Banners");
-            let obj = banners.as_object().unwrap();
-            for (port, data) in obj {
-                let banner_data = data.as_object().unwrap();
-                result += format!("\n\n**Port {}:**\n", port).as_str();
-                for (title, value) in banner_data {
-                    result += format!("\n- {}: {}", title, value).as_str();
-                }
-            }
-            Some(result)
-        } else {
-            None
-        };
         let flags = if let Some(flags) = self.get_data("flags") {
             let mut result = String::from("#### Flags\n");
             result += format!(
@@ -204,20 +177,14 @@ impl Node {
             None
         };
 
-        let connections_markdown: String = self
+        let connections_markdown = self
             .get_connections()
             .iter()
             .map(|conn| conn.to_markdown())
-            .collect::<Vec<_>>()
+            .collect::<Vec<String>>()
             .join("\n\n");
 
         let mut sections = vec![format!("### {}", self.value)];
-        if let Some(screenshot) = screenshot {
-            sections.push(screenshot);
-        }
-        if let Some(banners) = banners {
-            sections.push(banners);
-        }
         if let Some(flags) = flags {
             sections.push(flags);
         }

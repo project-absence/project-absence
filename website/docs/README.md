@@ -11,7 +11,7 @@ displayed_sidebar: sidebar
     Project Absence is a domain and server OSINT tool for system administrators and security engineers. It currently supports subdomain discovery and detection of potential domain takeover opportunities on common hosting platforms.
   </p>
   <p>
-    To maintain an OSINT-only approach, the tool contacts each discovered domain or server only once, to capture a screenshot and extract information based on the returned content - valuable data that can help and lead to further discoveries.
+    To maintain an OSINT-only approach, the tool contacts each discovered domain or server only once, to extract information based on the returned content - valuable data that can help and lead to further discoveries.
   </p>
   <p>
     More features are in development.

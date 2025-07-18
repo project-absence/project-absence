@@ -98,12 +98,6 @@ impl Session {
         if let Some(config) = &self.config.passive_dns {
             self.register_module(modules::passive_dns::ModulePassiveDNS::new(config.clone()));
         }
-        #[cfg(feature = "chrome")]
-        if let Some(config) = &self.config.screenshot_grabber {
-            self.register_module(modules::screenshot_grabber::ModuleScreenshotGrabber::new(
-                config.clone(),
-            ));
-        }
     }
 
     pub fn emit(&self, event: events::Type) {
