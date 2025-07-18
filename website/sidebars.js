@@ -26,7 +26,6 @@ const sidebars = {
         "modules/domain_takeover",
         "modules/dork",
         "modules/passive_dns",
-        "modules/screenshot_grabber",
       ],
       collapsed: true,
     },

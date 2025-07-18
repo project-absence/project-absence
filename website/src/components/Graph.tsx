@@ -98,7 +98,6 @@ export default function Graph({ data }: GraphProps) {
           <DomainModal
             label={selectedNodeData.label}
             flags={selectedNodeData.flags}
-            screenshot={selectedNodeData.screenshot}
             possible_takeover_platform={selectedNodeData.possible_takeover}
           />
         );

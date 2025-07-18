@@ -12,9 +12,6 @@ enabled = false
 
 [passive_dns]
 enabled = false
-
-[screenshot_grabber]
-enabled = false
 "#;
 
 pub fn create_file_if_not_existing() {
@@ -46,8 +43,6 @@ pub struct Config {
     pub domain_takeover: Option<DomainTakeoverConfig>,
     pub dork: Option<DorkConfig>,
     pub passive_dns: Option<PassiveDNSConfig>,
-    #[cfg(feature = "chrome")]
-    pub screenshot_grabber: Option<ScreenshotGrabberConfig>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -72,16 +67,4 @@ pub struct PassiveDNSConfig {
     pub ignore_expired: Option<bool>,
     /// Only care about the recently (24 hours) created certificates
     pub recent_only: Option<bool>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ScreenshotGrabberConfig {
-    /// Whether the module is enabled
-    pub enabled: bool,
-    /// Path for Chrome or Chromium
-    /// If unspecified, it will try to automatically detect a suitable binary
-    pub chrome_path: Option<String>,
-    /// Whether the screenshots should be saved as separate file
-    /// If false, it will base64 encode the screenshot and save it in the JSON file
-    pub save_as_file: Option<bool>,
 }

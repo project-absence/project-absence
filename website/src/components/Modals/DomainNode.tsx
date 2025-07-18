@@ -6,14 +6,12 @@ import NodeDetails from "../NodeDetails";
 type DomainModalProps = {
   label: string;
   flags: number;
-  screenshot?: string;
   possible_takeover_platform: string;
 };
 
 export default function DomainModal({
   label,
   flags,
-  screenshot,
   possible_takeover_platform,
 }: DomainModalProps) {
   const expired = checkFlag(flags, DomainFlags.HAS_EXPIRED);
@@ -78,11 +76,6 @@ export default function DomainModal({
           </div>
         </div>
       </div>
-      {screenshot && !screenshot.endsWith(".png") && (
-        <NodeDetails title="Screenshot">
-          <img src={`data:image/png;base64,${screenshot}`} />
-        </NodeDetails>
-      )}
     </div>
   );
 }

@@ -6,8 +6,6 @@ pub mod dork;
 pub mod lua_script;
 pub mod passive_dns;
 pub mod ready;
-#[cfg(feature = "chrome")]
-pub mod screenshot_grabber;
 
 pub enum Context {
     Domain(String),

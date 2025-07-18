@@ -33,9 +33,9 @@ export default function Home() {
             </p>
             <p>
               To maintain an OSINT-only approach, the tool contacts each
-              discovered domain or server only once, to capture a screenshot and
-              extract information based on the returned content - valuable data
-              that can help and lead to further discoveries.
+              discovered domain or server only once, to extract information
+              based on the returned content - valuable data that can help
+              and lead to further discoveries.
             </p>
             <p>More features are in development.</p>
             <div className="margin-bottom--xl">
